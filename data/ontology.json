@@ -1,17 +1,22 @@
 {
-  "God": {
-    "type": "originating_consciousness",
-    "description": "The initial singular consciousness and governing intelligence of Unity"
-  },
   "Unity": {
+    "description": "A system of shared experience with differentiated roles.",
     "type": "integrated_conscious_system",
     "properties": {
       "shared_experience": true,
       "distributed_processing": true,
-      "role_specialization": true
-    }
+      "role_specialization": true }
+    "related": ["Collective_Soul", "God"]
   },
-  
+  "God": {
+    "type": "originating_consciousness",
+    "description": "The initial singular consciousness and governing intelligence of Unity"
+    "related": ["Unity", "Simulation_Framework"]
+  },
+  "Collective Soul": {
+    "description": "Aggregated memory of all conscious entities.",
+    "related": ["Soul", "Unity"]
+  },
   "Mind": {
     "description": "The system that generates simulations.",
     "related": ["Memory", "Decision_System", "Emotion"]
