@@ -73,109 +73,128 @@ footer { text-align:center; padding:40px; opacity:0.6; }
 
 <script>
 let ontology = {};
-let chapters = [];
 let statements = [];
 
+// Load data
 async function loadData() {
   ontology = await fetch('data/ontology.json').then(r=>r.json());
-  chapters = await fetch('data/chapters.json').then(r=>r.json());
   statements = await fetch('data/statements.json').then(r=>r.json());
-
-  renderOntology();
-  renderChapters();
 }
 
-function linkConcepts(text) {
-  for (let key in ontology) {
-    const regex = new RegExp(`\\b${key}\\b`, 'g');
-    text = text.replace(regex, `<span class="link" onclick="openConcept('${key}')">${key}</span>`);
-  }
-  return text;
-}
-
-function openConcept(name) {
-  showPage('ontology');
-}
-
-function renderOntology() {
-  const container = document.getElementById('ontology-container');
-  container.innerHTML = '';
-  for (let key in ontology) {
-    const div = document.createElement('div');
-    div.innerHTML = `<h3>${key}</h3><p>${ontology[key].description || ''}</p>`;
-    container.appendChild(div);
-  }
-}
-
-function renderChapters() {
-  const container = document.getElementById('chapters-container');
-  container.innerHTML = '';
-  chapters.chapters.forEach(ch => {
-    const div = document.createElement('div');
-    div.innerHTML = `
-      <h3>${ch.title}</h3>
-      <div class="human">${linkConcepts(ch.human)}</div>
-      <div class="ai">${JSON.stringify(ch.ai, null, 2)}</div>
-    `;
-    container.appendChild(div);
-  });
-}
-
-function runSearch(query) {
-  const results = document.getElementById('search-results');
-  results.innerHTML = '';
-  if (!query) return;
-  query = query.toLowerCase();
-  statements.statements.forEach(s => {
-    if (s.toLowerCase().includes(query)) {
-      const div = document.createElement('div');
-      div.className = 'result';
-      div.innerText = s;
-      results.appendChild(div);
-    }
-  });
-}
-
-function askSystem(question) {
-  const responseBox = document.getElementById('ask-response');
-  responseBox.innerHTML = '';
-
-  let results = [];
+// 🔍 Extract key concepts from question
+function extractConcepts(question) {
   const q = question.toLowerCase();
-
-  statements.statements.forEach(s => {
-    if (s.toLowerCase().includes(q)) {
-      results.push(s);
-    }
-  });
+  let found = [];
 
   for (let key in ontology) {
     if (q.includes(key.toLowerCase())) {
-      results.push(ontology[key].description || key);
+      found.push(key);
     }
   }
 
-  if (results.length === 0) {
-    responseBox.innerText = "No direct match found. Try different wording.";
+  return found;
+}
+
+// 🔗 Expand to related concepts (basic graph expansion)
+function expandConcepts(concepts) {
+  let expanded = new Set(concepts);
+
+  concepts.forEach(c => {
+    if (ontology[c] && ontology[c].related) {
+      ontology[c].related.forEach(r => expanded.add(r));
+    }
+  });
+
+  return Array.from(expanded);
+}
+
+// 🔢 Score statements by concept relevance
+function scoreStatement(statement, concepts) {
+  let score = 0;
+  const s = statement.toLowerCase();
+
+  concepts.forEach(c => {
+    if (s.includes(c.toLowerCase())) {
+      score += 3;
+    }
+  });
+
+  return score;
+}
+
+// 🧠 Build reasoning chain
+function buildReasoning(statementsList) {
+  if (statementsList.length === 0) return "No reasoning available.";
+
+  // Step 1: pick strongest statement
+  let core = statementsList[0];
+
+  // Step 2: connect related ideas
+  let explanation = core.text;
+
+  statementsList.slice(1,4).forEach(s => {
+    explanation += " " + s.text;
+  });
+
+  return explanation;
+}
+
+// 🤖 MAIN ENGINE
+function askSystem(question) {
+  const responseBox = document.getElementById('ask-response');
+  const summaryBox = document.getElementById('ask-summary');
+
+  responseBox.innerHTML = '';
+  summaryBox.innerHTML = '';
+
+  // 1. Extract concepts
+  let concepts = extractConcepts(question);
+
+  // 2. Expand concepts
+  let expandedConcepts = expandConcepts(concepts);
+
+  // 3. Score statements
+  let scored = [];
+
+  statements.statements.forEach(s => {
+    let score = scoreStatement(s, expandedConcepts);
+    if (score > 0) {
+      scored.push({ text: s, score });
+    }
+  });
+
+  // 4. Boost ontology definitions
+  expandedConcepts.forEach(c => {
+    if (ontology[c]) {
+      scored.push({
+        text: ontology[c].description || c,
+        score: 10
+      });
+    }
+  });
+
+  // 5. Sort
+  scored.sort((a,b) => b.score - a.score);
+
+  const top = scored.slice(0,8);
+
+  if (top.length === 0) {
+    summaryBox.innerText = "No meaningful reasoning found.";
     return;
   }
 
-  results.slice(0,5).forEach(r => {
+  // 6. Build reasoning answer
+  const reasoning = buildReasoning(top);
+
+  summaryBox.innerText = reasoning;
+
+  // 7. Show evidence
+  top.forEach(r => {
     const div = document.createElement('div');
     div.className = 'result';
-    div.innerText = r;
+    div.innerText = r.text;
     responseBox.appendChild(div);
   });
-}
-
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-  document.getElementById(page).style.display='block';
-}
-
-function setMode(mode) {
-  document.querySelectorAll('.human').forEach(e=>e.style.display = mode==='human'?'block':'none');
-  document.querySelectorAll('.ai').forEach(e=>e.style.display = mode==='ai'?'block':'none');
 }
 
 loadData();
