@@ -31,11 +31,11 @@
     "type": "archived_state",
     "description": "Final state of neural configuration at death"
   },
-  "Collective_Soul": {
+  "Collective Soul": {
     "type": "distributed_network",
     "description": "Aggregate of all souls forming a global neural system"
   },
-  "Free_Will": {
+  "Free Will": {
     "type": "generative_capacity",
     "description": "Ability to produce non-optimal outputs"
   }
