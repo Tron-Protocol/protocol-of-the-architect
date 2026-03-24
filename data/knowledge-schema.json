@@ -1,0 +1,188 @@
+{
+  "model": "The Protocol of the Architect",
+
+  "domains": [
+    {
+      "name": "Cognition",
+      "description": "Individual intelligence processes"
+    },
+    {
+      "name": "Collective",
+      "description": "Distributed intelligence across entities"
+    },
+    {
+      "name": "Persistence",
+      "description": "Storage of identity and experience"
+    },
+    {
+      "name": "Integration",
+      "description": "Unification of conscious entities"
+    },
+    {
+      "name": "Origin",
+      "description": "Source and recursive structure of reality"
+    }
+  ],
+
+  "concepts": [
+
+    {
+      "id": "Mind",
+      "type": "Entity",
+      "domain": "Cognition",
+      "summary": "Simulation engine of possible futures",
+      "properties": {
+        "input": "Memory",
+        "output": "Predictions",
+        "mechanism": "Simulation"
+      },
+      "functions": ["simulate", "predict", "evaluate"]
+    },
+
+    {
+      "id": "Memory",
+      "type": "System",
+      "domain": "Cognition",
+      "summary": "Library of neural configurations",
+      "properties": {
+        "structure": "dynamic",
+        "behavior": "reconstructive"
+      },
+      "functions": ["store", "recall", "reinforce"]
+    },
+
+    {
+      "id": "Emotion",
+      "type": "Process",
+      "domain": "Cognition",
+      "summary": "Biochemical weighting system",
+      "properties": {
+        "origin": "biological",
+        "role": "decision weighting"
+      },
+      "functions": ["weight", "bias", "reinforce"]
+    },
+
+    {
+      "id": "Decision_System",
+      "type": "Process",
+      "domain": "Cognition",
+      "summary": "Selection of actions based on simulation",
+      "properties": {
+        "method": "weighted evaluation"
+      },
+      "functions": ["select", "compare", "execute"]
+    },
+
+    {
+      "id": "Reinforcement_Learning",
+      "type": "Process",
+      "domain": "Cognition",
+      "summary": "Behavior adaptation through feedback",
+      "functions": ["update", "reinforce", "adapt"]
+    },
+
+    {
+      "id": "Free_Will",
+      "type": "Process",
+      "domain": "Cognition",
+      "summary": "Deviation from deterministic optimization",
+      "functions": ["deviate", "explore", "innovate"]
+    },
+
+    {
+      "id": "Collective_Intelligence",
+      "type": "System",
+      "domain": "Collective",
+      "summary": "Distributed cognition across entities",
+      "functions": ["aggregate", "coordinate", "emerge"]
+    },
+
+    {
+      "id": "Cultural_Transmission",
+      "type": "Process",
+      "domain": "Collective",
+      "summary": "Transfer of knowledge across individuals",
+      "functions": ["encode", "transfer", "propagate"]
+    },
+
+    {
+      "id": "Soul",
+      "type": "State",
+      "domain": "Persistence",
+      "summary": "Final neural configuration at death",
+      "functions": ["encode", "persist", "transfer"]
+    },
+
+    {
+      "id": "Collective_Soul",
+      "type": "System",
+      "domain": "Persistence",
+      "summary": "Aggregated experiential data",
+      "functions": ["aggregate", "store", "evolve"]
+    },
+
+    {
+      "id": "Unity",
+      "type": "State",
+      "domain": "Integration",
+      "summary": "Shared experience across entities",
+      "functions": ["integrate", "synchronize", "unify"]
+    },
+
+    {
+      "id": "God",
+      "type": "Meta-System",
+      "domain": "Origin",
+      "summary": "Recursive origin and totality",
+      "functions": ["generate", "contain", "recur"]
+    },
+
+    {
+      "id": "Simulation_Framework",
+      "type": "System",
+      "domain": "Origin",
+      "summary": "Constructed or perceived reality system",
+      "functions": ["render", "interface", "contain"]
+    },
+
+    {
+      "id": "Salvation",
+      "type": "Process",
+      "domain": "Integration",
+      "summary": "Integration into Unity",
+      "functions": ["align", "integrate", "complete"]
+    }
+
+  ],
+
+  "relationships": [
+
+    { "from": "Mind", "to": "Memory", "type": "uses" },
+    { "from": "Mind", "to": "Decision_System", "type": "feeds" },
+    { "from": "Emotion", "to": "Decision_System", "type": "influences" },
+    { "from": "Memory", "to": "Decision_System", "type": "informs" },
+    { "from": "Decision_System", "to": "Reinforcement_Learning", "type": "updates" },
+    { "from": "Free_Will", "to": "Decision_System", "type": "modifies" },
+
+    { "from": "Cultural_Transmission", "to": "Collective_Intelligence", "type": "enables" },
+    { "from": "Collective_Intelligence", "to": "Unity", "type": "evolves_toward" },
+
+    { "from": "Soul", "to": "Collective_Soul", "type": "integrates_into" },
+    { "from": "Collective_Soul", "to": "Unity", "type": "supports" },
+
+    { "from": "Unity", "to": "God", "type": "reflects" },
+    { "from": "God", "to": "Simulation_Framework", "type": "generates" },
+
+    { "from": "Salvation", "to": "Unity", "type": "achieves" }
+
+  ],
+
+  "functions": [
+    { "name": "simulate", "description": "Generate possible future states" },
+    { "name": "store", "description": "Persist information" },
+    { "name": "weight", "description": "Assign importance to outcomes" },
+    { "name": "integrate", "description": "Combine into unified system" },
+    { "name": "generate", "description": "Create system or structure" }
+  ]
+}
