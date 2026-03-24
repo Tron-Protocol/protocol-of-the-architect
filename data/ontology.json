@@ -11,7 +11,7 @@
       "role_specialization": true
     }
   },
-  {
+  
   "Mind": {
     "description": "The system that generates simulations.",
     "related": ["Memory", "Decision_System", "Emotion"]
