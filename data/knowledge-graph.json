@@ -5,8 +5,8 @@
     "Mind",
     "Spirit",
     "Soul",
-    "Collective_Soul",
-    "Free_Will"
+    "Collective Soul",
+    "Free Will"
   ],
   "edges": [
     { "from": "God", "to": "Unity", "type": "creates" },
