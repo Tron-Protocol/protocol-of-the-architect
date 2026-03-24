@@ -2,18 +2,19 @@
   "Unity": {
     "description": "A system of shared experience with differentiated roles.",
     "type": "integrated_conscious_system",
+    "related": ["Collective_Soul", "God"],
     "properties": {
       "shared_experience": true,
       "distributed_processing": true,
-      "role_specialization": true }
-    "related": ["Collective_Soul", "God"]
+      "role_specialization": true
+    }
   },
   "God": {
     "type": "originating_consciousness",
     "description": "The initial singular consciousness and governing intelligence of Unity"
     "related": ["Unity", "Simulation_Framework"]
   },
-  "Collective Soul": {
+  "Collective_Soul": {
     "description": "Aggregated memory of all conscious entities.",
     "related": ["Soul", "Unity"]
   },
@@ -37,11 +38,11 @@
     "type": "archived_state",
     "description": "Final state of neural configuration at death"
   },
-  "Collective Soul": {
+  "Collective_Soul": {
     "type": "distributed_network",
     "description": "Aggregate of all souls forming a global neural system"
   },
-  "Free Will": {
+  "Free_Will": {
     "type": "generative_capacity",
     "description": "Ability to produce non-optimal outputs"
   }
