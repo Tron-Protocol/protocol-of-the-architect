@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Knowledge Graph</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<style>
+body {
+  margin:0;
+  display:flex;
+  background:#000;
+  color:#fff;
+  font-family:Arial;
+}
+
+/* GRAPH AREA */
+#graph {
+  flex:3;
+}
+
+/* SIDEBAR */
+#sidebar {
+  flex:1;
+  border-left:1px solid #333;
+  padding:20px;
+  overflow-y:auto;
+  background:#0a0a0a;
+}
+
+h2 {
+  margin-top:0;
+}
+
+.node {
+  fill:#8ab4ff;
+  cursor:pointer;
+}
+
+.node.dim {
+  opacity:0.2;
+}
+
+.link {
+  stroke:#555;
+}
+
+.link.highlight {
+  stroke:#fff;
+  stroke-width:2;
+}
+
+text {
+  fill:white;
+  font-size:12px;
+  pointer-events:none;
+}
+
+button {
+  background:#222;
+  border:1px solid #555;
+  color:#fff;
+  padding:10px;
+  cursor:pointer;
+  margin-top:10px;
+  width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<div id="graph">
+  <svg width="100%" height="100%"></svg>
+</div>
+
+<div id="sidebar">
+  <h2>Concept</h2>
+  <div id="concept-name">Click a node</div>
+  <p id="concept-desc"></p>
+
+  <h3>Related</h3>
+  <ul id="related-list"></ul>
+
+  <button onclick="explainConcept()">Explain (AI)</button>
+
+  <h3>Explanation</h3>
+  <div id="explanation"></div>
+</div>
+
+<script>
+
+let ontology = {};
+let nodes = [];
+let links = [];
+let currentConcept = null;
+
+// LOAD DATA
+async function loadGraph() {
+  ontology = await fetch('data/ontology.json').then(r=>r.json());
+
+  for (let key in ontology) {
+    nodes.push({ id: key });
+
+    if (ontology[key].related) {
+      ontology[key].related.forEach(rel => {
+        links.push({ source: key, target: rel });
+      });
+    }
+  }
+
+  renderGraph();
+}
+
+// RENDER GRAPH
+function renderGraph() {
+  const svg = d3.select("svg");
+
+  const simulation = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+    .force("charge", d3.forceManyBody().strength(-300))
+    .force("center", d3.forceCenter(window.innerWidth/2, window.innerHeight/2));
+
+  const link = svg.append("g")
+    .selectAll("line")
+    .data(links)
+    .enter()
+    .append("line")
+    .attr("class", "link");
+
+  const node = svg.append("g")
+    .selectAll("circle")
+    .data(nodes)
+    .enter()
+    .append("circle")
+    .attr("class", "node")
+    .attr("r", 8)
+    .call(d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended))
+    .on("click", (event, d) => selectNode(d, node, link));
+
+  const label = svg.append("g")
+    .selectAll("text")
+    .data(nodes)
+    .enter()
+    .append("text")
+    .text(d => d.id);
+
+  simulation.on("tick", () => {
+    link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+
+    node
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
+
+    label
+      .attr("x", d => d.x + 10)
+      .attr("y", d => d.y + 3);
+  });
+
+  function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+  }
+
+  function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+}
+
+// NODE SELECTION
+function selectNode(d, nodeSelection, linkSelection) {
+  currentConcept = d.id;
+
+  // Update sidebar
+  document.getElementById('concept-name').innerText = d.id;
+  document.getElementById('concept-desc').innerText = ontology[d.id]?.description || '';
+
+  // Related list
+  const list = document.getElementById('related-list');
+  list.innerHTML = '';
+
+  if (ontology[d.id]?.related) {
+    ontology[d.id].related.forEach(r => {
+      const li = document.createElement('li');
+      li.innerText = r;
+      list.appendChild(li);
+    });
+  }
+
+  // Highlight connections
+  nodeSelection.classed("dim", true);
+
+  nodeSelection
+    .filter(n => n.id === d.id || ontology[d.id]?.related?.includes(n.id))
+    .classed("dim", false);
+
+  linkSelection.classed("highlight", l =>
+    l.source.id === d.id || l.target.id === d.id
+  );
+}
+
+// AI EXPLANATION (HOOKS INTO YOUR SYSTEM)
+async function explainConcept() {
+  if (!currentConcept) return;
+
+  const res = await fetch('data/statements.json').then(r=>r.json());
+
+  let matches = res.statements.filter(s =>
+    s.toLowerCase().includes(currentConcept.toLowerCase())
+  );
+
+  const explanation = matches.slice(0,5).join(' ');
+
+  document.getElementById('explanation').innerText =
+    explanation || "No explanation available.";
+}
+
+loadGraph();
+
+</script>
+
+</body>
+</html>
