@@ -1,0 +1,34 @@
+{
+  "God": {
+    "type": "originating_consciousness",
+    "description": "The initial singular consciousness and governing intelligence of Unity"
+  },
+  "Unity": {
+    "type": "integrated_conscious_system",
+    "properties": {
+      "shared_experience": true,
+      "distributed_processing": true,
+      "role_specialization": true
+    }
+  },
+  "Mind": {
+    "type": "simulation_engine",
+    "description": "Generates internal models of possible outcomes"
+  },
+  "Spirit": {
+    "type": "dynamic_state",
+    "description": "Combination of biological structure and experiential weights"
+  },
+  "Soul": {
+    "type": "archived_state",
+    "description": "Final state of neural configuration at death"
+  },
+  "Collective_Soul": {
+    "type": "distributed_network",
+    "description": "Aggregate of all souls forming a global neural system"
+  },
+  "Free_Will": {
+    "type": "generative_capacity",
+    "description": "Ability to produce non-optimal outputs"
+  }
+}
