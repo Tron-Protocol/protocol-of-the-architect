@@ -154,26 +154,50 @@ footer {
 
 <script>
 
-let ontology = {};
-let chapters = {};
-let statements = {};
+let schema = {};
 
-// LOAD DATA
+// LOAD SCHEMA
 async function loadData() {
-  ontology = await fetch('data/ontology.json').then(r=>r.json());
-  chapters = await fetch('data/chapters.json').then(r=>r.json());
-  statements = await fetch('data/statements.json').then(r=>r.json());
+  schema = await fetch('data/knowledge-schema.json').then(r=>r.json());
 
   renderOntology();
-  renderChapters();
 }
 
-// CROSS-LINKING
+// ======================
+// ONTOLOGY (FROM SCHEMA)
+// ======================
+
+function renderOntology() {
+  const container = document.getElementById('ontology-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  schema.concepts.forEach(c => {
+    const item = document.createElement('details');
+
+    item.innerHTML = `
+      <summary>${c.id}</summary>
+      <p>${c.summary}</p>
+      <p><strong>Domain:</strong> ${c.domain}</p>
+      <p><strong>Functions:</strong> ${c.functions.join(', ')}</p>
+    `;
+
+    container.appendChild(item);
+  });
+}
+
+// ======================
+// CROSS LINKING
+// ======================
+
 function linkConcepts(text) {
-  for (let key in ontology) {
-    const regex = new RegExp(`\\b${key}\\b`, 'g');
-    text = text.replace(regex, `<span class="link" onclick="openConcept('${key}')">${key}</span>`);
-  }
+  schema.concepts.forEach(c => {
+    const regex = new RegExp(`\\b${c.id}\\b`, 'g');
+    text = text.replace(regex,
+      `<span class="link" onclick="openConcept('${c.id}')">${c.id}</span>`
+    );
+  });
   return text;
 }
 
@@ -181,37 +205,10 @@ function openConcept(name) {
   showPage('ontology');
 }
 
-// RENDER ONTOLOGY
-function renderOntology() {
-  const container = document.getElementById('ontology-container');
-  container.innerHTML = '';
+// ======================
+// SEARCH (SCHEMA BASED)
+// ======================
 
-  for (let key in ontology) {
-    const item = document.createElement('details');
-    item.innerHTML = `<summary>${key}</summary><p>${ontology[key].description || ''}</p>`;
-    container.appendChild(item);
-  }
-}
-
-// RENDER CHAPTERS
-function renderChapters() {
-  const container = document.getElementById('chapters-container');
-  container.innerHTML = '';
-
-  chapters.chapters.forEach(ch => {
-    const div = document.createElement('div');
-
-    div.innerHTML = `
-      <h3>${ch.title}</h3>
-      <div class="human">${linkConcepts(ch.human)}</div>
-      <div class="ai">${JSON.stringify(ch.ai, null, 2)}</div>
-    `;
-
-    container.appendChild(div);
-  });
-}
-
-// SEARCH
 function runSearch(query) {
   const results = document.getElementById('search-results');
   results.innerHTML = '';
@@ -220,123 +217,111 @@ function runSearch(query) {
 
   query = query.toLowerCase();
 
-  statements.statements.forEach(s => {
-    if (s.toLowerCase().includes(query)) {
+  schema.concepts.forEach(c => {
+    if (
+      c.id.toLowerCase().includes(query) ||
+      c.summary.toLowerCase().includes(query)
+    ) {
       const div = document.createElement('div');
       div.className = 'result';
-      div.innerText = s;
+      div.innerText = `${c.id}: ${c.summary}`;
       results.appendChild(div);
     }
   });
 }
 
-// REASONING ENGINE
+// ======================
+// 🧠 TRUE REASONING ENGINE
+// ======================
 
-function extractConcepts(question) {
-  const q = question.toLowerCase();
-  let found = [];
-
-  for (let key in ontology) {
-    if (q.includes(key.toLowerCase())) {
-      found.push(key);
-    }
-  }
-
-  return found;
+// Find related concepts
+function getRelatedConcepts(conceptId) {
+  return schema.relationships
+    .filter(r => r.from === conceptId)
+    .map(r => r.to);
 }
 
-function expandConcepts(concepts) {
-  let expanded = new Set(concepts);
+// Multi-hop expansion
+function expandConcepts(baseConcepts) {
+  let expanded = new Set(baseConcepts);
 
-  concepts.forEach(c => {
-    if (ontology[c] && ontology[c].related) {
-      ontology[c].related.forEach(r => expanded.add(r));
-    }
+  baseConcepts.forEach(c => {
+    const related = getRelatedConcepts(c);
+    related.forEach(r => expanded.add(r));
   });
 
   return Array.from(expanded);
 }
 
-function scoreStatement(statement, concepts) {
-  let score = 0;
-  const s = statement.toLowerCase();
+// Build reasoning chain
+function buildReasoning(concepts) {
+  let explanation = '';
 
-  concepts.forEach(c => {
-    if (s.includes(c.toLowerCase())) {
-      score += 3;
+  concepts.forEach(cId => {
+    const concept = schema.concepts.find(x => x.id === cId);
+    if (concept) {
+      explanation += concept.summary + ' ';
     }
-  });
-
-  return score;
-}
-
-function buildReasoning(statementsList) {
-  if (statementsList.length === 0) return "No reasoning available.";
-
-  let explanation = statementsList[0].text;
-
-  statementsList.slice(1,4).forEach(s => {
-    explanation += " " + s.text;
   });
 
   return explanation;
 }
 
+// MAIN ASK FUNCTION
 function askSystem(question) {
-  const responseBox = document.getElementById('ask-response');
+
   const summaryBox = document.getElementById('ask-summary');
+  const responseBox = document.getElementById('ask-response');
 
-  responseBox.innerHTML = '';
   summaryBox.innerHTML = '';
+  responseBox.innerHTML = '';
 
-  let concepts = extractConcepts(question);
-  let expandedConcepts = expandConcepts(concepts);
+  const q = question.toLowerCase();
 
-  let scored = [];
+  // 1. Extract concepts
+  let found = schema.concepts
+    .filter(c => q.includes(c.id.toLowerCase()))
+    .map(c => c.id);
 
-  statements.statements.forEach(s => {
-    let score = scoreStatement(s, expandedConcepts);
-    if (score > 0) {
-      scored.push({ text: s, score });
-    }
-  });
-
-  expandedConcepts.forEach(c => {
-    if (ontology[c]) {
-      scored.push({
-        text: ontology[c].description || c,
-        score: 10
-      });
-    }
-  });
-
-  scored.sort((a,b) => b.score - a.score);
-
-  const top = scored.slice(0,8);
-
-  if (top.length === 0) {
-    summaryBox.innerText = "No meaningful reasoning found.";
+  if (found.length === 0) {
+    summaryBox.innerText = "No concepts detected.";
     return;
   }
 
-  const reasoning = buildReasoning(top);
+  // 2. Expand
+  let expanded = expandConcepts(found);
+
+  // 3. Build explanation
+  const reasoning = buildReasoning(expanded);
+
   summaryBox.innerText = reasoning;
 
-  top.forEach(r => {
+  // 4. Show structured breakdown
+  expanded.forEach(cId => {
+    const concept = schema.concepts.find(x => x.id === cId);
+
     const div = document.createElement('div');
     div.className = 'result';
-    div.innerText = r.text;
+
+    div.innerHTML = `
+      <strong>${concept.id}</strong><br>
+      ${concept.summary}<br>
+      <em>Functions:</em> ${concept.functions.join(', ')}
+    `;
+
     responseBox.appendChild(div);
   });
 }
 
-// NAVIGATION
+// ======================
+// NAVIGATION + MODES
+// ======================
+
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p=>p.style.display='none');
   document.getElementById(page).style.display='block';
 }
 
-// MODE TOGGLE
 function setMode(mode) {
   document.querySelectorAll('.human').forEach(e=>e.style.display = mode==='human'?'block':'none');
   document.querySelectorAll('.ai').forEach(e=>e.style.display = mode==='ai'?'block':'none');
