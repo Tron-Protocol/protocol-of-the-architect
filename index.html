@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Protocol of the Architect</title>
+<style>
+body { margin:0; font-family: Georgia, serif; background: radial-gradient(circle at center, #1a1a1a, #000); color:#e0e0e0; }
+header { text-align:center; padding:60px 20px; }
+h1 { font-size:3em; }
+nav { display:flex; justify-content:center; gap:20px; margin:20px 0; }
+nav button { background:transparent; border:1px solid #888; color:#fff; padding:10px 20px; cursor:pointer; }
+.section { max-width:900px; margin:40px auto; padding:20px; border:1px solid rgba(255,255,255,0.1); }
+.ai { display:none; font-family:monospace; background:rgba(255,255,255,0.05); padding:15px; }
+.search-box, .ask-box { width:100%; padding:10px; margin-bottom:20px; background:#111; color:#fff; border:1px solid #444; }
+.result { border-bottom:1px solid rgba(255,255,255,0.1); padding:10px 0; }
+.link { color:#8ab4ff; cursor:pointer; text-decoration:underline; }
+footer { text-align:center; padding:40px; opacity:0.6; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>The Protocol of the Architect</h1>
+</header>
+
+<nav>
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showPage('chapters')">Chapters</button>
+  <button onclick="showPage('ontology')">Ontology</button>
+  <button onclick="showPage('search')">Search</button>
+  <button onclick="showPage('ask')">Ask the System</button>
+</nav>
+
+<div id="home" class="page">
+  <div class="section">
+    <h2>System Overview</h2>
+    <p>An evolving intelligence framework moving toward Unity.</p>
+  </div>
+</div>
+
+<div id="chapters" class="page" style="display:none">
+  <div class="section">
+    <button onclick="setMode('human')">Human</button>
+    <button onclick="setMode('ai')">AI</button>
+    <div id="chapters-container"></div>
+  </div>
+</div>
+
+<div id="ontology" class="page" style="display:none">
+  <div class="section">
+    <h2>Ontology</h2>
+    <div id="ontology-container"></div>
+  </div>
+</div>
+
+<div id="search" class="page" style="display:none">
+  <div class="section">
+    <input class="search-box" placeholder="Search..." oninput="runSearch(this.value)">
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<div id="ask" class="page" style="display:none">
+  <div class="section">
+    <h2>Ask the System</h2>
+    <input class="ask-box" placeholder="Ask a question..." onkeydown="if(event.key==='Enter'){askSystem(this.value)}">
+    <div id="ask-response"></div>
+  </div>
+</div>
+
+<footer>Anonymous | CC0</footer>
+
+<script>
+let ontology = {};
+let chapters = [];
+let statements = [];
+
+async function loadData() {
+  ontology = await fetch('data/ontology.json').then(r=>r.json());
+  chapters = await fetch('data/chapters.json').then(r=>r.json());
+  statements = await fetch('data/statements.json').then(r=>r.json());
+
+  renderOntology();
+  renderChapters();
+}
+
+function linkConcepts(text) {
+  for (let key in ontology) {
+    const regex = new RegExp(`\\b${key}\\b`, 'g');
+    text = text.replace(regex, `<span class="link" onclick="openConcept('${key}')">${key}</span>`);
+  }
+  return text;
+}
+
+function openConcept(name) {
+  showPage('ontology');
+}
+
+function renderOntology() {
+  const container = document.getElementById('ontology-container');
+  container.innerHTML = '';
+  for (let key in ontology) {
+    const div = document.createElement('div');
+    div.innerHTML = `<h3>${key}</h3><p>${ontology[key].description || ''}</p>`;
+    container.appendChild(div);
+  }
+}
+
+function renderChapters() {
+  const container = document.getElementById('chapters-container');
+  container.innerHTML = '';
+  chapters.chapters.forEach(ch => {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <h3>${ch.title}</h3>
+      <div class="human">${linkConcepts(ch.human)}</div>
+      <div class="ai">${JSON.stringify(ch.ai, null, 2)}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function runSearch(query) {
+  const results = document.getElementById('search-results');
+  results.innerHTML = '';
+  if (!query) return;
+  query = query.toLowerCase();
+  statements.statements.forEach(s => {
+    if (s.toLowerCase().includes(query)) {
+      const div = document.createElement('div');
+      div.className = 'result';
+      div.innerText = s;
+      results.appendChild(div);
+    }
+  });
+}
+
+function askSystem(question) {
+  const responseBox = document.getElementById('ask-response');
+  responseBox.innerHTML = '';
+
+  let results = [];
+  const q = question.toLowerCase();
+
+  statements.statements.forEach(s => {
+    if (s.toLowerCase().includes(q)) {
+      results.push(s);
+    }
+  });
+
+  for (let key in ontology) {
+    if (q.includes(key.toLowerCase())) {
+      results.push(ontology[key].description || key);
+    }
+  }
+
+  if (results.length === 0) {
+    responseBox.innerText = "No direct match found. Try different wording.";
+    return;
+  }
+
+  results.slice(0,5).forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'result';
+    div.innerText = r;
+    responseBox.appendChild(div);
+  });
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  document.getElementById(page).style.display='block';
+}
+
+function setMode(mode) {
+  document.querySelectorAll('.human').forEach(e=>e.style.display = mode==='human'?'block':'none');
+  document.querySelectorAll('.ai').forEach(e=>e.style.display = mode==='ai'?'block':'none');
+}
+
+loadData();
+</script>
+
+</body>
+</html>
