@@ -7,10 +7,6 @@
     "description": "The origin and totality of the system.",
     "related": ["Unity", "Simulation_Framework"]
   },
-  "Collective_Soul": {
-    "description": "Aggregated memory of all conscious entities.",
-    "related": ["Soul", "Unity"]
-  },
   "Mind": {
     "description": "The system that generates simulations.",
     "related": ["Memory", "Decision_System", "Emotion"]
@@ -33,7 +29,8 @@
   },
   "Collective Soul": {
     "type": "distributed_network",
-    "description": "Aggregate of all souls forming a global neural system"
+    "description": "Aggregate of all souls forming a global neural system",
+    "related": ["Soul", "Unity"]
   },
   "Free Will": {
     "type": "generative_capacity",
