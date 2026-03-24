@@ -1,0 +1,34 @@
+{
+  "chapters": [
+    {
+      "title": "Experiencing Reality",
+      "human": "Reality is constructed through perception systems.",
+      "ai": {
+        "assertions": [
+          "reality is not directly accessible",
+          "perception reconstructs input"
+        ]
+      }
+    },
+    {
+      "title": "Consciousness Detection",
+      "human": "Consciousness is inferred through non-optimal behavior.",
+      "ai": {
+        "assertions": [
+          "consciousness cannot be directly measured",
+          "creativity indicates internal simulation"
+        ]
+      }
+    },
+    {
+      "title": "Collective Intelligence",
+      "human": "Humanity functions as a distributed intelligence system.",
+      "ai": {
+        "assertions": [
+          "intelligence emerges from interaction",
+          "society acts as neural network"
+        ]
+      }
+    }
+  ]
+}
