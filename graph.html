@@ -97,8 +97,16 @@ let currentConcept = null;
 
 // LOAD DATA
 async function loadGraph() {
-  ontology = await fetch('data/ontology.json').then(r=>r.json());
+  ontology = await fetch('data/knowledge-schema.json').then(r=>r.json());
 
+schema.concepts.forEach(c => {
+  nodes.push({ id: c.id });
+});
+
+schema.relationships.forEach(r => {
+  links.push({ source: r.from, target: r.to });
+});
+  
   for (let key in ontology) {
     nodes.push({ id: key });
 
