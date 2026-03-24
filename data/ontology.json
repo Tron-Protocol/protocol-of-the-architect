@@ -1,17 +1,10 @@
 {
   "Unity": {
     "description": "A system of shared experience with differentiated roles.",
-    "type": "integrated_conscious_system",
-    "related": ["Collective_Soul", "God"],
-    "properties": {
-      "shared_experience": true,
-      "distributed_processing": true,
-      "role_specialization": true
-    }
+    "related": ["Collective_Soul", "God"]
   },
   "God": {
-    "type": "originating_consciousness",
-    "description": "The initial singular consciousness and governing intelligence of Unity"
+    "description": "The origin and totality of the system.",
     "related": ["Unity", "Simulation_Framework"]
   },
   "Collective_Soul": {
