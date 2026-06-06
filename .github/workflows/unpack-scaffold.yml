@@ -1,0 +1,133 @@
+name: Unpack Astro Scaffold
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v5
+        with:
+          ref: astro-site-migration
+
+      - name: Show starting workspace
+        run: |
+          echo "Current branch:"
+          git branch --show-current
+          echo ""
+          echo "Top-level files:"
+          ls -la
+          echo ""
+          echo "Zip files found:"
+          find . -maxdepth 2 -iname "*.zip" -print
+
+      - name: Locate no-workflows scaffold zip
+        run: |
+          ZIP_FILE="$(find . -maxdepth 2 -iname "protocol-of-the-architect-astro-scaffold-no-workflows.zip" | head -n 1)"
+
+          if [ -z "$ZIP_FILE" ]; then
+            echo "No no-workflows scaffold zip found."
+            echo "Expected: protocol-of-the-architect-astro-scaffold-no-workflows.zip"
+            find . -maxdepth 3 -type f | sort | head -200
+            exit 1
+          fi
+
+          echo "ZIP_FILE=$ZIP_FILE" >> "$GITHUB_ENV"
+          echo "Using scaffold zip: $ZIP_FILE"
+          unzip -l "$ZIP_FILE" | head -80
+
+      - name: Preserve existing prototype files
+        run: |
+          mkdir -p legacy
+
+          if [ -f index.html ]; then
+            git mv index.html legacy/index.html || mv index.html legacy/index.html
+          fi
+
+          if [ -f graph.html ]; then
+            git mv graph.html legacy/graph.html || mv graph.html legacy/graph.html
+          fi
+
+          if [ -f robots.txt ]; then
+            git mv robots.txt legacy/robots.txt || mv robots.txt legacy/robots.txt
+          fi
+
+          if [ -f sitemap.xml ]; then
+            git mv sitemap.xml legacy/sitemap.xml || mv sitemap.xml legacy/sitemap.xml
+          fi
+
+      - name: Unpack scaffold into repo root
+        run: |
+          rm -rf scaffold-temp
+          mkdir scaffold-temp
+
+          unzip -q "$ZIP_FILE" -d scaffold-temp
+
+          echo "Extracted files:"
+          find scaffold-temp -maxdepth 4 -type f | sort | head -120
+
+          if [ -f scaffold-temp/package.json ]; then
+            echo "Detected scaffold files directly inside scaffold-temp."
+            cp -R scaffold-temp/. .
+          elif [ -f scaffold-temp/protocol-of-the-architect-astro-scaffold/package.json ]; then
+            echo "Detected nested scaffold folder."
+            cp -R scaffold-temp/protocol-of-the-architect-astro-scaffold/. .
+          else
+            echo "Could not find package.json in expected scaffold location."
+            echo "Extracted structure:"
+            find scaffold-temp -maxdepth 5 -print | sort | head -200
+            exit 1
+          fi
+
+          rm -rf scaffold-temp
+
+          rm -f protocol-of-the-architect-astro-scaffold.zip
+          rm -f protocol-of-the-architect-astro-scaffold-no-workflows.zip
+
+      - name: Validate generated structure
+        run: |
+          echo "Final top-level files:"
+          ls -la
+
+          test -f package.json
+          test -f astro.config.mjs
+          test -f tsconfig.json
+          test -d src
+          test -d scripts
+          test -d public
+
+          echo "Scaffold structure looks correct."
+
+      - name: Confirm no deploy workflow was added by scaffold
+        run: |
+          if [ -f .github/workflows/deploy.yml ]; then
+            echo "Unexpected deploy.yml exists. This should be added manually later, not by unpack workflow."
+            exit 1
+          fi
+
+          echo "No deploy workflow added. Good."
+
+      - name: Commit unpacked scaffold
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git status
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Unpack Astro scaffold into repository"
+          git push origin astro-site-migration
