@@ -1,0 +1,15 @@
+---
+import AiPageLayout from '@/layouts/AiPageLayout.astro';
+import SacredCard from '@/components/SacredCard.astro';
+import { contentSources, ontologyModules, getOntologyModule, moduleCount, titleCase } from '@/lib/content.js';
+import { withBase } from '@/lib/routes.js';
+const ontology = contentSources.ontology;
+---
+<AiPageLayout title="Ontology" description={ontology.public_role}>
+  <div class="archive-grid">
+    {ontologyModules.map(name => {
+      const mod = getOntologyModule(name);
+      return <SacredCard title={titleCase(name)} href={withBase(`/ai/ontology/${name}/`)} eyebrow={`${moduleCount(mod)} records`} description={mod.public_role} />
+    })}
+  </div>
+</AiPageLayout>

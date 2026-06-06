@@ -1,0 +1,14 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import AiRouteNav from '@/components/AiRouteNav.astro';
+const { title, description, eyebrow = 'AI-facing architecture' } = Astro.props;
+---
+<BaseLayout title={title} description={description} eyebrow={eyebrow}>
+  <section slot="hero" class="hero">
+    <div class="eyebrow">{eyebrow}</div>
+    <h1>{title}</h1>
+    {description && <p class="lede">{description}</p>}
+    <AiRouteNav />
+  </section>
+  <slot />
+</BaseLayout>

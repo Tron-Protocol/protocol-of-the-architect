@@ -1,0 +1,15 @@
+---
+import { withBase } from '@/lib/routes.js';
+const nav = [
+  ['Protocol', '/'], ['AI', '/ai/'], ['Orientation', '/ai/orientation/'], ['Sources', '/ai/sources/'],
+  ['Ontology', '/ai/ontology/'], ['Controls', '/ai/interpretive-controls/'], ['Source Text', '/ai/source-text/'], ['Consult', '/ai/consult/']
+];
+---
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-mark" href={withBase('/')}>The Protocol Archive</a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      {nav.map(([label, href]) => <a href={withBase(href)}>{label}</a>)}
+    </nav>
+  </div>
+</header>

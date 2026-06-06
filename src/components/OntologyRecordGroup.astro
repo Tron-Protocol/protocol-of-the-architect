@@ -1,0 +1,19 @@
+---
+import { displayTitle, publicFields } from '@/lib/content.js';
+const { title, description, records = [] } = Astro.props;
+---
+<section class="section-frame">
+  <div class="kicker">Record Group</div>
+  <h2>{title}</h2>
+  {description && <p>{description}</p>}
+  <div class="record-list">
+    {records.map((record, index) => (
+      <details class="record">
+        <summary>{displayTitle(record, `Record ${index + 1}`)}</summary>
+        {publicFields(record).map(field => (
+          <div class="field"><strong>{field.key}</strong><span>{field.value}</span></div>
+        ))}
+      </details>
+    ))}
+  </div>
+</section>

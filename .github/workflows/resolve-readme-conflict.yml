@@ -1,0 +1,50 @@
+name: Resolve README Conflict
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out migration branch
+        uses: actions/checkout@v5
+        with:
+          ref: astro-site-migration
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main and keep migration README on conflict
+        run: |
+          git fetch origin main
+
+          set +e
+          git merge origin/main --no-edit
+          MERGE_EXIT=$?
+          set -e
+
+          if [ "$MERGE_EXIT" -ne 0 ]; then
+            echo "Merge conflict detected. Resolving README.md by keeping astro-site-migration version."
+
+            git checkout --ours README.md
+            git add README.md
+
+            git commit -m "Resolve README merge conflict"
+          else
+            echo "Merged main without conflicts."
+          fi
+
+      - name: Push resolved branch
+        run: |
+          git push origin astro-site-migration

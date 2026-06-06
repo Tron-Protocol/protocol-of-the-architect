@@ -1,0 +1,19 @@
+---
+import AiPageLayout from '@/layouts/AiPageLayout.astro';
+import SacredCard from '@/components/SacredCard.astro';
+import SectionFrame from '@/components/SectionFrame.astro';
+import { getSourceSummaries } from '@/lib/content.js';
+import { withBase } from '@/lib/routes.js';
+---
+<AiPageLayout title="Source Text Summaries" description="Chapter and section summaries that orient readers before the full source text.">
+  <div class="archive-grid">
+    {getSourceSummaries().map(chapter => <SacredCard title={`${chapter.chapter_id}: ${chapter.chapter_title}`} href={withBase(`/ai/source-text/${chapter.chapter_id.toLowerCase()}/`)} eyebrow="Source" description={chapter.chapter_summary} />)}
+  </div>
+  {getSourceSummaries().map(chapter => (
+    <SectionFrame title={`${chapter.chapter_id}: ${chapter.chapter_title}`} eyebrow="Chapter Sections" description={chapter.chapter_summary}>
+      <div class="record-list">
+        {chapter.sections?.map(section => <details class="record"><summary>{section.section_title}</summary><p>{section.section_summary}</p></details>)}
+      </div>
+    </SectionFrame>
+  ))}
+</AiPageLayout>

@@ -1,0 +1,9 @@
+---
+import AiPageLayout from '@/layouts/AiPageLayout.astro';
+import OntologyRecordGroup from '@/components/OntologyRecordGroup.astro';
+import { getOntologyModule } from '@/lib/content.js';
+const module = getOntologyModule('relations');
+---
+<AiPageLayout title="Ontology: Relations" description={module.public_role}>
+  <OntologyRecordGroup title="Relations" description="Public display is grouped on this module page. Internal trace remains hidden." records={module.records} />
+</AiPageLayout>

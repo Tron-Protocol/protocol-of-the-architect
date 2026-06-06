@@ -1,0 +1,14 @@
+---
+import SourceTextLayout from '@/layouts/SourceTextLayout.astro';
+import SourceTextBlock from '@/components/SourceTextBlock.astro';
+import RelatedLinks from '@/components/RelatedLinks.astro';
+import { getSourceTextRecords, chapterSlug } from '@/lib/content.js';
+export function getStaticPaths() {
+  return getSourceTextRecords().map(record => ({ params: { chapter: chapterSlug(record) }, props: { record } }));
+}
+const { record } = Astro.props;
+---
+<SourceTextLayout title={`${record.chapter_id}: ${record.public_title}`} description="Canon source text rendered as a reading panel. Interpretive trace remains hidden.">
+  <RelatedLinks links={[{ label: 'Source Summaries', href: '/ai/sources/' }, { label: 'Orientation', href: '/ai/orientation/' }, { label: 'Controls', href: '/ai/interpretive-controls/' }]} />
+  <SourceTextBlock text={record.full_text} />
+</SourceTextLayout>
