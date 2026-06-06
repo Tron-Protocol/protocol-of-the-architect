@@ -1,0 +1,81 @@
+name: Unpack Astro Scaffold
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - astro-site-migration
+    paths:
+      - "protocol-of-the-architect-astro-scaffold.zip"
+      - ".github/workflows/unpack-scaffold.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: astro-site-migration
+
+      - name: Confirm scaffold zip exists
+        run: |
+          test -f protocol-of-the-architect-astro-scaffold.zip
+          unzip -l protocol-of-the-architect-astro-scaffold.zip | head -50
+
+      - name: Preserve existing prototype files
+        run: |
+          mkdir -p legacy
+          [ -f index.html ] && git mv index.html legacy/index.html || true
+          [ -f graph.html ] && git mv graph.html legacy/graph.html || true
+          [ -f robots.txt ] && git mv robots.txt legacy/robots.txt || true
+          [ -f sitemap.xml ] && git mv sitemap.xml legacy/sitemap.xml || true
+
+      - name: Unpack scaffold into repo root
+        run: |
+          rm -rf scaffold-temp
+          mkdir scaffold-temp
+          unzip -q protocol-of-the-architect-astro-scaffold.zip -d scaffold-temp
+
+          if [ -f scaffold-temp/package.json ]; then
+            cp -R scaffold-temp/. .
+          elif [ -f scaffold-temp/protocol-of-the-architect-astro-scaffold/package.json ]; then
+            cp -R scaffold-temp/protocol-of-the-architect-astro-scaffold/. .
+          else
+            echo "Could not find package.json in expected scaffold location."
+            find scaffold-temp -maxdepth 3 -type f | head -100
+            exit 1
+          fi
+
+          rm -rf scaffold-temp
+          rm -f protocol-of-the-architect-astro-scaffold.zip
+
+      - name: Validate generated structure
+        run: |
+          test -f package.json
+          test -f astro.config.mjs
+          test -d src
+          test -d scripts
+          test -d public
+          test -d .github/workflows
+          echo "Scaffold structure looks correct."
+
+      - name: Commit unpacked scaffold
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git status
+
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git add .
+          git commit -m "Unpack Astro scaffold into repository"
+          git push origin astro-site-migration
