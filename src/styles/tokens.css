@@ -1,0 +1,24 @@
+:root {
+  color-scheme: dark;
+  --color-void: #050505;
+  --color-obsidian: #0b0a08;
+  --color-charcoal: #12100d;
+  --color-panel: rgba(19, 17, 14, 0.86);
+  --color-panel-strong: rgba(10, 9, 8, 0.94);
+  --color-amber: #c79a4b;
+  --color-amber-soft: #e4c27a;
+  --color-blue: #6f93a6;
+  --color-blue-dim: rgba(111, 147, 166, 0.38);
+  --color-border: rgba(199, 154, 75, 0.36);
+  --color-border-blue: rgba(111, 147, 166, 0.24);
+  --color-text: #efe8d6;
+  --color-muted: #b7ad99;
+  --color-dim: #817866;
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-body: ui-serif, Georgia, 'Times New Roman', serif;
+  --font-label: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --radius-panel: 18px;
+  --shadow-archive: 0 24px 90px rgba(0, 0, 0, 0.55);
+  --max-page: 1180px;
+}

@@ -1,0 +1,10 @@
+---
+import { withBase } from '@/lib/routes.js';
+const routes = [
+  ['Start', '/ai/orientation/'], ['Sources', '/ai/sources/'], ['Ontology', '/ai/ontology/'],
+  ['Controls', '/ai/interpretive-controls/'], ['Source Text', '/ai/source-text/'], ['Consult', '/ai/consult/']
+];
+---
+<nav class="route-nav" aria-label="AI route navigation">
+  {routes.map(([label, href]) => <a href={withBase(href)}>{label}</a>)}
+</nav>

@@ -1,0 +1,17 @@
+---
+import AiPageLayout from '@/layouts/AiPageLayout.astro';
+import SectionFrame from '@/components/SectionFrame.astro';
+import SacredCard from '@/components/SacredCard.astro';
+import { contentSources, getOrientationSections } from '@/lib/content.js';
+const orientation = contentSources.ai_orientation;
+---
+<AiPageLayout title="Protocol Orientation" description={orientation.public_role}>
+  {getOrientationSections().map(section => (
+    <SectionFrame title={section.title} eyebrow="Orientation" description={section.summary}>
+      {section.full_exposition && <p>{section.full_exposition}</p>}
+      {section.governing_principles?.length > 0 && <div class="archive-grid">
+        {section.governing_principles.map(principle => <SacredCard title={principle.title} eyebrow="Governing Principle" description={principle.plain_language_statement} />)}
+      </div>}
+    </SectionFrame>
+  ))}
+</AiPageLayout>

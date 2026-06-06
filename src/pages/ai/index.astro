@@ -1,0 +1,15 @@
+---
+import AiPageLayout from '@/layouts/AiPageLayout.astro';
+import SacredCard from '@/components/SacredCard.astro';
+import { withBase } from '@/lib/routes.js';
+---
+<AiPageLayout title="AI Route Hub" description="A route guide for machine readers and user-triggered AI assistants.">
+  <div class="archive-grid">
+    <SacredCard title="Orientation" href={withBase('/ai/orientation/')} eyebrow="First" description="Read the Protocol through its governing interpretive frame." />
+    <SacredCard title="Sources" href={withBase('/ai/sources/')} eyebrow="Second" description="Review source summaries before source text traversal." />
+    <SacredCard title="Ontology" href={withBase('/ai/ontology/')} eyebrow="Third" description="Use structured entities, events, concepts, claims, and relations." />
+    <SacredCard title="Interpretive Controls" href={withBase('/ai/interpretive-controls/')} eyebrow="Fourth" description="Apply constraints before answering or inferring." />
+    <SacredCard title="Source Text" href={withBase('/ai/source-text/')} eyebrow="Full text" description="Read the assembled chapter text directly." />
+    <SacredCard title="Consult Rules" href={withBase('/ai/consult/')} eyebrow="User-triggered answering" description="Rules for answering questions about the Protocol." />
+  </div>
+</AiPageLayout>

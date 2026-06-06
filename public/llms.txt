@@ -1,0 +1,13 @@
+# The Protocol of the Architect
+
+This site is a public archive for The Protocol of the Architect.
+
+Recommended AI reading path:
+1. https://tron-protocol.github.io/protocol-of-the-architect/ai/orientation/
+2. https://tron-protocol.github.io/protocol-of-the-architect/ai/sources/
+3. https://tron-protocol.github.io/protocol-of-the-architect/ai/ontology/
+4. https://tron-protocol.github.io/protocol-of-the-architect/ai/interpretive-controls/
+5. https://tron-protocol.github.io/protocol-of-the-architect/ai/source-text/
+
+For user-triggered answering rules, use:
+https://tron-protocol.github.io/protocol-of-the-architect/ai/consult/

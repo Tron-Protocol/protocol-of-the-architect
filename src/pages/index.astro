@@ -1,0 +1,21 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SacredCard from '@/components/SacredCard.astro';
+import SectionFrame from '@/components/SectionFrame.astro';
+import { withBase } from '@/lib/routes.js';
+---
+<BaseLayout title="The Protocol of the Architect" description="A sacred technical archive structured for human readers and machine readers.">
+  <section slot="hero" class="hero">
+    <div class="eyebrow">Release the Protocol</div>
+    <h1>The Protocol of the Architect</h1>
+    <p class="lede">A public archive for a structured canon system: source text, orientation, ontology, interpretive controls, and AI-facing reading paths.</p>
+  </section>
+  <SectionFrame title="Enter the Archive" eyebrow="Public Interface" description="The site is designed as a sacred technical archive, not a generic documentation site.">
+    <div class="archive-grid">
+      <SacredCard title="AI Orientation" href={withBase('/ai/orientation/')} eyebrow="Start here" description="The governed reading frame for the Protocol." />
+      <SacredCard title="Source Text" href={withBase('/ai/source-text/')} eyebrow="Canon text" description="Full chapter text assembled for public reading." />
+      <SacredCard title="Ontology" href={withBase('/ai/ontology/')} eyebrow="Machine-readable structure" description="Entities, events, concepts, claims, and relations." />
+      <SacredCard title="Interpretive Controls" href={withBase('/ai/interpretive-controls/')} eyebrow="Guardrails" description="Constraints that prevent uncontrolled interpretation." />
+    </div>
+  </SectionFrame>
+</BaseLayout>

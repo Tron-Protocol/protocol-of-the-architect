@@ -1,0 +1,9 @@
+---
+const { title = 'Interpretive Control', eyebrow = 'Constraint', description } = Astro.props;
+---
+<aside class="warning-panel">
+  <div class="kicker">{eyebrow}</div>
+  <h3>{title}</h3>
+  {description && <p>{description}</p>}
+  <slot />
+</aside>

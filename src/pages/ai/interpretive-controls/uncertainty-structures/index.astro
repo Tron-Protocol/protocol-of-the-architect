@@ -1,0 +1,12 @@
+---
+import AiPageLayout from '@/layouts/AiPageLayout.astro';
+import WarningPanel from '@/components/WarningPanel.astro';
+import OntologyRecordGroup from '@/components/OntologyRecordGroup.astro';
+import { getControlModule } from '@/lib/content.js';
+const module = getControlModule('uncertainty_boundaries');
+const records = module.records || module.gates || [];
+---
+<AiPageLayout title="Uncertainty Structures" description={module.public_role}>
+  <WarningPanel title="Control Layer" description="These records constrain interpretation. They are not decorative metadata." />
+  <OntologyRecordGroup title="Uncertainty Structures" description="Public controls are rendered without internal trace or provenance." records={records} />
+</AiPageLayout>

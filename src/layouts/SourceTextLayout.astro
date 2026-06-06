@@ -1,0 +1,12 @@
+---
+import BaseLayout from './BaseLayout.astro';
+const { title, description } = Astro.props;
+---
+<BaseLayout title={title} description={description}>
+  <section slot="hero" class="hero">
+    <div class="eyebrow">Source Text Archive</div>
+    <h1>{title}</h1>
+    {description && <p class="lede">{description}</p>}
+  </section>
+  <slot />
+</BaseLayout>

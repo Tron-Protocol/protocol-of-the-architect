@@ -1,0 +1,11 @@
+---
+import SourceTextLayout from '@/layouts/SourceTextLayout.astro';
+import SacredCard from '@/components/SacredCard.astro';
+import { getSourceTextRecords, chapterSlug } from '@/lib/content.js';
+import { withBase } from '@/lib/routes.js';
+---
+<SourceTextLayout title="Full Source Text" description="Assembled chapter text for The Protocol of the Architect.">
+  <div class="archive-grid">
+    {getSourceTextRecords().map(chapter => <SacredCard title={`${chapter.chapter_id}: ${chapter.public_title}`} href={withBase(`/ai/source-text/${chapterSlug(chapter)}/`)} eyebrow={`${chapter.text_character_count} characters`} description="Read the full assembled source text." />)}
+  </div>
+</SourceTextLayout>

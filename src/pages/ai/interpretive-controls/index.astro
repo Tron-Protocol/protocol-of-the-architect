@@ -1,0 +1,15 @@
+---
+import AiPageLayout from '@/layouts/AiPageLayout.astro';
+import SacredCard from '@/components/SacredCard.astro';
+import { controlModules, getControlModule, moduleCount, titleCase } from '@/lib/content.js';
+import { withBase } from '@/lib/routes.js';
+const routeName = name => name === 'canon_gates' ? 'canon-gates' : name.replace('_boundaries', '-structures').replace('_sets', '-sets').replace(/_/g, '-');
+---
+<AiPageLayout title="Interpretive Controls" description="Guardrails, representation boundaries, uncertainty boundaries, and interpretation sets for disciplined reading.">
+  <div class="archive-grid">
+    {controlModules.map(name => {
+      const mod = getControlModule(name);
+      return <SacredCard title={titleCase(name)} href={withBase(`/ai/interpretive-controls/${routeName(name)}/`)} eyebrow={`${moduleCount(mod)} records`} description={mod.public_role} />
+    })}
+  </div>
+</AiPageLayout>
