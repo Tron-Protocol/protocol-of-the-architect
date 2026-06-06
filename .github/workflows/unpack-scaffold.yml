@@ -65,7 +65,7 @@ jobs:
             git mv sitemap.xml legacy/sitemap.xml || mv sitemap.xml legacy/sitemap.xml
           fi
 
-      - name: Unpack scaffold into repo root
+      - name: Unpack scaffold into repo root without workflow files
         run: |
           rm -rf scaffold-temp
           mkdir scaffold-temp
@@ -77,10 +77,10 @@ jobs:
 
           if [ -f scaffold-temp/package.json ]; then
             echo "Detected scaffold files directly inside scaffold-temp."
-            cp -R scaffold-temp/. .
+            SCAFFOLD_ROOT="scaffold-temp"
           elif [ -f scaffold-temp/protocol-of-the-architect-astro-scaffold/package.json ]; then
             echo "Detected nested scaffold folder."
-            cp -R scaffold-temp/protocol-of-the-architect-astro-scaffold/. .
+            SCAFFOLD_ROOT="scaffold-temp/protocol-of-the-architect-astro-scaffold"
           else
             echo "Could not find package.json in expected scaffold location."
             echo "Extracted structure:"
@@ -88,8 +88,34 @@ jobs:
             exit 1
           fi
 
+          echo "Copying scaffold files, excluding .github/workflows..."
+          shopt -s dotglob
+
+          for item in "$SCAFFOLD_ROOT"/*; do
+            base="$(basename "$item")"
+
+            if [ "$base" = ".github" ]; then
+              mkdir -p .github
+              if [ -d "$item" ]; then
+                for gh_item in "$item"/*; do
+                  gh_base="$(basename "$gh_item")"
+                  if [ "$gh_base" = "workflows" ]; then
+                    echo "Skipping scaffold .github/workflows to avoid workflow permission rejection."
+                  else
+                    cp -R "$gh_item" .github/
+                  fi
+                done
+              fi
+            else
+              cp -R "$item" .
+            fi
+          done
+
           rm -rf scaffold-temp
           rm -f "$ZIP_FILE"
+
+          echo "Confirm no scaffold deploy workflow was added:"
+          ls -la .github/workflows || true
 
       - name: Validate generated structure
         run: |
