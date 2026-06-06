@@ -1,0 +1,61 @@
+name: Test Astro Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - astro-site-migration
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "astro.config.mjs"
+      - "tsconfig.json"
+      - "src/**"
+      - "scripts/**"
+      - "public/**"
+      - ".github/workflows/test-astro-build.yml"
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v5
+        with:
+          ref: astro-site-migration
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Show repository structure
+        run: |
+          ls -la
+          find src -maxdepth 3 -type f | sort | head -100
+          find scripts -maxdepth 2 -type f | sort
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Validate source
+        run: npm run validate
+
+      - name: Generate support files
+        run: npm run generate:support
+
+      - name: Build site
+        run: npm run build
+
+      - name: Confirm build output
+        run: |
+          test -d dist
+          find dist -maxdepth 3 -type f | sort | head -100
+          echo "Astro build completed successfully."
