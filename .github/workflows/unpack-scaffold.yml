@@ -6,13 +6,16 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   unpack:
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: astro-site-migration
 
@@ -58,6 +61,66 @@ jobs:
             git mv robots.txt legacy/robots.txt || mv robots.txt legacy/robots.txt
           fi
 
+          if [ -f sitemap.xml ]; then
+            git mv sitemap.xml legacy/sitemap.xml || mv sitemap.xml legacy/sitemap.xml
+          fi
+
+      - name: Unpack scaffold into repo root
+        run: |
+          rm -rf scaffold-temp
+          mkdir scaffold-temp
+
+          unzip -q "$ZIP_FILE" -d scaffold-temp
+
+          echo "Extracted files:"
+          find scaffold-temp -maxdepth 4 -type f | sort | head -120
+
+          if [ -f scaffold-temp/package.json ]; then
+            echo "Detected scaffold files directly inside scaffold-temp."
+            cp -R scaffold-temp/. .
+          elif [ -f scaffold-temp/protocol-of-the-architect-astro-scaffold/package.json ]; then
+            echo "Detected nested scaffold folder."
+            cp -R scaffold-temp/protocol-of-the-architect-astro-scaffold/. .
+          else
+            echo "Could not find package.json in expected scaffold location."
+            echo "Extracted structure:"
+            find scaffold-temp -maxdepth 5 -print | sort | head -200
+            exit 1
+          fi
+
+          rm -rf scaffold-temp
+          rm -f "$ZIP_FILE"
+
+      - name: Validate generated structure
+        run: |
+          echo "Final top-level files:"
+          ls -la
+
+          test -f package.json
+          test -f astro.config.mjs
+          test -d src
+          test -d scripts
+          test -d public
+          test -d .github/workflows
+
+          echo "Scaffold structure looks correct."
+
+      - name: Commit unpacked scaffold
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git status
+
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Unpack Astro scaffold into repository"
+          git push origin astro-site-migration
           if [ -f sitemap.xml ]; then
             git mv sitemap.xml legacy/sitemap.xml || mv sitemap.xml legacy/sitemap.xml
           fi
