@@ -3,9 +3,26 @@ import SourceTextLayout from '@/layouts/SourceTextLayout.astro';
 import SacredCard from '@/components/SacredCard.astro';
 import { getSourceTextRecords, chapterSlug } from '@/lib/content.js';
 import { withBase } from '@/lib/routes.js';
+
+function sourceTextTitle(record) {
+  if (record.chapter_id === 'CH00') return 'Introduction';
+
+  const match = String(record.chapter_id).match(/^CH(\d+)$/);
+  if (!match) return record.public_title;
+
+  return `Chapter ${Number(match[1])}: ${record.public_title}`;
+}
 ---
+
 <SourceTextLayout title="Full Source Text" description="Assembled chapter text for The Protocol of the Architect.">
   <div class="archive-grid">
-    {getSourceTextRecords().map(chapter => <SacredCard title={`${chapter.chapter_id}: ${chapter.public_title}`} href={withBase(`/ai/source-text/${chapterSlug(chapter)}/`)} eyebrow={`${chapter.text_character_count} characters`} description="Read the full assembled source text." />)}
+    {getSourceTextRecords().map(chapter => (
+      <SacredCard
+        title={sourceTextTitle(chapter)}
+        href={withBase(`/ai/source-text/${chapterSlug(chapter)}/`)}
+        eyebrow={`${chapter.text_character_count} characters`}
+        description="Read the full assembled source text."
+      />
+    ))}
   </div>
 </SourceTextLayout>
