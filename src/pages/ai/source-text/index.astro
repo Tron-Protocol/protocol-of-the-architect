@@ -5,12 +5,21 @@ import { getSourceTextRecords, chapterSlug } from '@/lib/content.js';
 import { withBase } from '@/lib/routes.js';
 
 function sourceTextTitle(record) {
-  if (record.chapter_id === 'CH00') return 'Introduction';
+  const publicTitles = {
+    CH00: 'Introduction',
+    CH01: 'Chapter 1: Origins',
+    CH02: 'Chapter 2: Humanity',
+    CH03: 'Chapter 3: Civilization',
+    CH04: 'Chapter 4: Cultivation',
+    CH05: 'Chapter 5: The Book of Jasher',
+    CH06: 'Chapter 6: The House of Israel',
+    CH07: 'Chapter 7: A New Path',
+    CH08: 'Chapter 8: The Compendium of Caleb',
+    CH09: 'Chapter 9: Exposition',
+    CH10: 'Chapter 10: The Book of the Wars of the Lord'
+  };
 
-  const match = String(record.chapter_id).match(/^CH(\d+)$/);
-  if (!match) return record.public_title;
-
-  return `Chapter ${Number(match[1])}: ${record.public_title}`;
+  return publicTitles[record.chapter_id] || record.public_title;
 }
 ---
 
