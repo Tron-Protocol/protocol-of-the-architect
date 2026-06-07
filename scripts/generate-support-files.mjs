@@ -33,10 +33,7 @@ const sourceTextRoutes = data.content_sources.source_text.records.map(
 const routes = [...staticRoutes, ...sourceTextRoutes];
 
 function absoluteUrl(route) {
-  if (route === '/') {
-    return `${base}/`;
-  }
-
+  if (route === '/') return `${base}/`;
   return `${base}${route}`;
 }
 
