@@ -1,7 +1,7 @@
 ---
 import SourceTextLayout from '@/layouts/SourceTextLayout.astro';
 import SacredCard from '@/components/SacredCard.astro';
-import { getSourceTextRecords, chapterSlug } from '@/lib/content.js';
+import { getSourceTextRecords, chapterSlug, publicChapterTitle } from '@/lib/content.js';
 import { withBase } from '@/lib/routes.js';
 
 function sourceTextTitle(record) {
