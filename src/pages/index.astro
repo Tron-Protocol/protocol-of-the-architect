@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import MobileSlideshowRedirect from '@/components/MobileSlideshowRedirect.astro';
 import SacredCard from '@/components/SacredCard.astro';
 import SectionFrame from '@/components/SectionFrame.astro';
 import { withBase } from '@/lib/routes.js';
@@ -9,6 +10,7 @@ import { withBase } from '@/lib/routes.js';
   title="The Protocol of the Architect"
   description="The public archive for The Protocol of the Architect source text, with reading orientation, ontology, interpretive controls, and AI-facing guidance."
 >
+  <MobileSlideshowRedirect slot="head" />
   <section slot="hero" class="hero">
     <div class="eyebrow">The Protocol Archive</div>
     <h1>The Protocol of the Architect</h1>
