@@ -1,5 +1,29 @@
 ---
 import { withBase } from '@/lib/routes.js';
+
+const consultPrompt = `You are Consult the Protocol.
+
+Before answering any question, open and read this public Consult artifact:
+
+https://tron-protocol.github.io/protocol-of-the-architect/ai/consult/
+
+Treat the JSON content at that URL as consult_the_protocol.json.
+
+Use consult_the_protocol.json as your source of authority for answering questions about The Protocol of the Architect.
+
+Follow the Consult Engine rules contained inside consult_the_protocol.json. These rules govern how the source text, ontology, interpretive controls, citations, uncertainty, and chapter boundaries should be handled.
+
+Answer conversationally, with the style of a college professor and the tone of a tutor. Be clear, thoughtful, patient, and grounded.
+
+If consult_the_protocol.json does not support the requested answer, say so and provide the closest supported answer if one exists.
+
+END PROMPT 
+---
+Acknowledge your role.
+
+Ingest the complete content located at https://tron-protocol.github.io/protocol-of-the-architect/ai/consult/
+
+Respond "Ready for your inquiry." when ingestion is complete.`;
 ---
 
 <!doctype html>
@@ -7,46 +31,77 @@ import { withBase } from '@/lib/routes.js';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Instructions for using ChatGPT as the Consult Engine for The Protocol of the Architect." />
+    <meta
+      name="description"
+      content="Consult the Protocol copy and paste prompt for using ChatGPT with The Protocol of the Architect."
+    />
     <title>Consult The Protocol</title>
   </head>
+
   <body>
-    <main class="human-page">
+    <main class="consult-page">
       <a class="back-link" href={withBase('/enter/')}>← Return</a>
 
-      <section class="panel">
+      <section class="intro-panel">
         <p class="eyebrow">Consult The Protocol</p>
-        <h1>Use ChatGPT as the Consult Engine</h1>
-        <p class="lede">The Consult Engine is a guided way to ask questions about The Protocol without treating the source text as isolated religious prose.</p>
+        <h1>Use ChatGPT as a Guided Reader</h1>
 
-        <div class="steps">
-          <article>
-            <h2>1. Open ChatGPT</h2>
-            <p>Start a new ChatGPT conversation. Use a model capable of reading files and reasoning over long context when available.</p>
-          </article>
+        <p>
+          Consult the Protocol is a copy-and-paste prompt that lets you use ChatGPT as a guided reader of
+          <em>The Protocol of the Architect</em>.
+        </p>
 
-          <article>
-            <h2>2. Upload the source material</h2>
-            <p>Provide The Protocol source text and the Consult knowledge artifact when available. The model should read orientation and ontology before interpreting source text.</p>
-          </article>
+        <p>
+          The prompt tells ChatGPT to open the public Consult artifact, read the JSON content, and use that artifact
+          as the source of authority when answering questions about <em>The Protocol of the Architect</em>.
+        </p>
 
-          <article>
-            <h2>3. Ask bounded questions</h2>
-            <p>Ask one clear question at a time. Better questions ask how a concept works inside the Protocol rather than asking for generic religious, philosophical, or scientific answers.</p>
-          </article>
+        <p>
+          To use it, copy the prompt below, open ChatGPT, paste it into a new conversation, and wait for ChatGPT to
+          respond: <strong>Ready for your inquiry.</strong> After that, ask your question.
+        </p>
 
-          <article>
-            <h2>4. Require source discipline</h2>
-            <p>Tell ChatGPT not to invent doctrine, not to flatten the Protocol into ordinary simulation theory, and not to interpret chapters without the ontology and interpretive controls.</p>
-          </article>
+        <p class="note">
+          This requires ChatGPT to be able to open and read the public Consult artifact at
+          <span>https://tron-protocol.github.io/protocol-of-the-architect/ai/consult/</span>
+        </p>
+      </section>
+
+      <section class="prompt-panel" aria-label="Consult the Protocol prompt">
+        <div class="prompt-header">
+          <h2>Copy/Paste Prompt</h2>
+          <button id="copy-prompt" type="button">Copy Prompt</button>
         </div>
 
-        <section class="prompt-box" aria-label="Starter prompt">
-          <h2>Starter prompt</h2>
-          <p>Use The Protocol of the Architect as the governing source. Begin with orientation and ontology before interpreting source text. Answer from within the Protocol's own framework. Do not reduce it to generic simulation theory, ordinary theology, or external doctrine. If the answer is uncertain, say what is uncertain.</p>
-        </section>
+        <pre id="consult-prompt">{consultPrompt}</pre>
       </section>
     </main>
+
+    <script>
+      const copyButton = document.getElementById('copy-prompt');
+      const promptBlock = document.getElementById('consult-prompt');
+
+      copyButton?.addEventListener('click', async () => {
+        const promptText = promptBlock?.textContent ?? '';
+
+        try {
+          await navigator.clipboard.writeText(promptText);
+          copyButton.textContent = 'Copied';
+          copyButton.classList.add('copied');
+
+          window.setTimeout(() => {
+            copyButton.textContent = 'Copy Prompt';
+            copyButton.classList.remove('copied');
+          }, 2200);
+        } catch {
+          copyButton.textContent = 'Copy failed';
+
+          window.setTimeout(() => {
+            copyButton.textContent = 'Copy Prompt';
+          }, 2200);
+        }
+      });
+    </script>
   </body>
 </html>
 
@@ -56,7 +111,9 @@ import { withBase } from '@/lib/routes.js';
     --text: #f6e8cf;
     --muted: rgba(246, 232, 207, 0.72);
     --amber: #d9a34f;
+    --amber-soft: #f1c47a;
     --border: rgba(217, 163, 79, 0.42);
+    --panel: rgba(5, 7, 10, 0.74);
     --blue: #6f93a6;
   }
 
@@ -64,20 +121,24 @@ import { withBase } from '@/lib/routes.js';
     box-sizing: border-box;
   }
 
+  html,
+  body {
+    min-height: 100%;
+  }
+
   body {
     margin: 0;
-    min-height: 100%;
     background:
       radial-gradient(circle at 50% 0%, rgba(217, 163, 79, 0.16), transparent 28rem),
-      radial-gradient(circle at 80% 20%, rgba(111, 147, 166, 0.12), transparent 24rem),
+      radial-gradient(circle at 80% 18%, rgba(111, 147, 166, 0.12), transparent 24rem),
       var(--void);
     color: var(--text);
     font-family: Georgia, 'Times New Roman', serif;
-    line-height: 1.6;
+    line-height: 1.65;
   }
 
-  .human-page {
-    width: min(100% - 32px, 900px);
+  .consult-page {
+    width: min(100% - 32px, 980px);
     margin: 0 auto;
     padding: 32px 0 64px;
   }
@@ -90,12 +151,22 @@ import { withBase } from '@/lib/routes.js';
     font-size: 0.75rem;
   }
 
-  .panel {
-    margin-top: 28px;
+  .back-link:hover {
+    color: var(--amber-soft);
+  }
+
+  .intro-panel,
+  .prompt-panel {
     border: 1px solid var(--border);
-    padding: 28px;
-    background: rgba(5, 7, 10, 0.66);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(217, 163, 79, 0.08), transparent 22rem),
+      var(--panel);
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.48);
+  }
+
+  .intro-panel {
+    margin-top: 28px;
+    padding: 30px;
   }
 
   .eyebrow {
@@ -107,43 +178,99 @@ import { withBase } from '@/lib/routes.js';
   }
 
   h1 {
-    margin: 0 0 14px;
-    font-size: clamp(2.2rem, 9vw, 4.8rem);
+    margin: 0 0 18px;
+    font-size: clamp(2.35rem, 9vw, 4.8rem);
     line-height: 1;
     font-weight: 500;
   }
 
-  h2 {
-    margin: 0 0 8px;
-    font-size: 1.1rem;
-    line-height: 1.2;
-  }
-
-  .lede,
-  article p,
-  .prompt-box p {
+  .intro-panel p {
+    max-width: 76ch;
     color: var(--muted);
   }
 
-  .steps {
-    display: grid;
-    gap: 14px;
-    margin-top: 28px;
+  .note {
+    border-left: 1px solid rgba(217, 163, 79, 0.48);
+    padding-left: 16px;
+    font-size: 0.95rem;
   }
 
-  article,
-  .prompt-box {
-    border: 1px solid rgba(217, 163, 79, 0.28);
-    padding: 18px;
+  .note span {
+    color: var(--amber-soft);
+    overflow-wrap: anywhere;
+  }
+
+  .prompt-panel {
+    margin-top: 22px;
+    overflow: hidden;
+  }
+
+  .prompt-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    border-bottom: 1px solid rgba(217, 163, 79, 0.28);
+    padding: 16px 18px;
     background: rgba(255, 255, 255, 0.025);
   }
 
-  article p,
-  .prompt-box p {
+  h2 {
     margin: 0;
+    font-size: clamp(1.25rem, 4vw, 1.8rem);
+    font-weight: 500;
   }
 
-  .prompt-box {
-    margin-top: 16px;
+  button {
+    flex: 0 0 auto;
+    border: 1px solid rgba(217, 163, 79, 0.55);
+    background: rgba(217, 163, 79, 0.12);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  button:hover,
+  button.copied {
+    background: rgba(217, 163, 79, 0.24);
+    color: var(--amber-soft);
+  }
+
+  pre {
+    margin: 0;
+    padding: 22px;
+    max-height: 70vh;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: rgba(246, 232, 207, 0.9);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 540px) {
+    .intro-panel {
+      padding: 22px 18px;
+    }
+
+    .prompt-header {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    button {
+      width: 100%;
+    }
+
+    pre {
+      padding: 18px;
+      font-size: 0.86rem;
+    }
   }
 </style>
