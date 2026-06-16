@@ -1,7 +1,7 @@
 ---
 import SourceTextLayout from '@/layouts/SourceTextLayout.astro';
 import SacredCard from '@/components/SacredCard.astro';
-import { getSourceTextRecords, chapterSlug, publicChapterTitle } from '@/lib/content.js';
+import { getSourceTextRecords, chapterSlug } from '@/lib/content.js';
 import { withBase } from '@/lib/routes.js';
 
 function sourceTextTitle(record) {
@@ -24,6 +24,8 @@ function sourceTextTitle(record) {
 ---
 
 <SourceTextLayout title="Full Source Text" description="Assembled chapter text for The Protocol of the Architect.">
+  <a class="mobile-return-link" href={withBase('/enter/')}>← Return to Mobile Home</a>
+
   <div class="archive-grid">
     {getSourceTextRecords().map(chapter => (
       <SacredCard
@@ -35,3 +37,19 @@ function sourceTextTitle(record) {
     ))}
   </div>
 </SourceTextLayout>
+
+<style>
+  .mobile-return-link {
+    display: inline-block;
+    margin: 0 0 1.25rem;
+    color: rgba(246, 232, 207, 0.72);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  .mobile-return-link:hover {
+    color: #f1c47a;
+  }
+</style>
