@@ -1,0 +1,157 @@
+---
+import { withBase } from '@/lib/routes.js';
+
+const readUrl = 'https://tron-protocol.github.io/protocol-of-the-architect/ai/source-text/';
+const podcastsUrl = withBase('/podcasts/');
+const consultUrl = withBase('/consult/');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Entry page for The Protocol of the Architect." />
+    <title>The Protocol of the Architect</title>
+  </head>
+  <body>
+    <main class="entry-shell" aria-label="The Protocol of the Architect entry choices">
+      <section class="entry-card">
+        <div class="seal" aria-hidden="true"></div>
+
+        <h1>The Protocol of the Architect</h1>
+
+        <nav class="entry-actions" aria-label="Primary entry paths">
+          <a href={readUrl}>Read The Protocol</a>
+          <a href={podcastsUrl}>Explore The Protocol</a>
+          <a href={consultUrl}>Consult The Protocol</a>
+        </nav>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    --void: #05070a;
+    --text: #f6e8cf;
+    --amber: #d9a34f;
+    --amber-soft: #f1c47a;
+    --border: rgba(217, 163, 79, 0.46);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    min-height: 100%;
+    margin: 0;
+    background: var(--void);
+    color: var(--text);
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+
+  .entry-shell {
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: max(24px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
+    background:
+      linear-gradient(rgba(5, 7, 10, 0.48), rgba(5, 7, 10, 0.86)),
+      radial-gradient(circle at 50% 30%, rgba(217, 163, 79, 0.18), transparent 18rem),
+      url('/protocol-of-the-architect/images/mobile-landing-background.png'),
+      var(--void);
+    background-size: auto, auto, cover, auto;
+    background-position: center, center, center, center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .entry-shell::before,
+  .entry-shell::after {
+    content: '';
+    position: absolute;
+    inset: 20px;
+    border: 1px solid rgba(217, 163, 79, 0.22);
+    pointer-events: none;
+  }
+
+  .entry-shell::after {
+    inset: 34px;
+    border-color: rgba(246, 232, 207, 0.07);
+  }
+
+  .entry-card {
+    width: min(100%, 430px);
+    min-height: min(76svh, 720px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 34px;
+    padding: 44px 22px;
+    text-align: center;
+    border: 1px solid var(--border);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(217, 163, 79, 0.12), transparent 18rem),
+      rgba(5, 7, 10, 0.52);
+    box-shadow:
+      0 0 80px rgba(0, 0, 0, 0.65),
+      inset 0 0 36px rgba(217, 163, 79, 0.03);
+    position: relative;
+    z-index: 1;
+  }
+
+  .seal {
+    width: 74px;
+    height: 74px;
+    border: 1px solid rgba(217, 163, 79, 0.42);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, rgba(241, 196, 122, 0.9) 0 2px, transparent 3px),
+      repeating-conic-gradient(from 0deg, rgba(217, 163, 79, 0.38) 0deg 2deg, transparent 2deg 24deg);
+    box-shadow: 0 0 28px rgba(217, 163, 79, 0.16);
+  }
+
+  h1 {
+    margin: 0;
+    max-width: 12ch;
+    font-size: clamp(2.4rem, 12vw, 4.1rem);
+    line-height: 0.98;
+    letter-spacing: 0.01em;
+    font-weight: 500;
+    text-wrap: balance;
+  }
+
+  .entry-actions {
+    width: min(100%, 330px);
+    display: grid;
+    gap: 14px;
+  }
+
+  .entry-actions a {
+    display: block;
+    padding: 15px 18px;
+    border: 1px solid var(--border);
+    background: rgba(7, 8, 10, 0.72);
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    font-size: 0.84rem;
+    box-shadow:
+      inset 0 0 0 1px rgba(246, 232, 207, 0.05),
+      0 0 22px rgba(0, 0, 0, 0.42);
+  }
+
+  .entry-actions a:hover,
+  .entry-actions a:focus-visible {
+    outline: none;
+    color: #fff;
+    border-color: rgba(241, 196, 122, 0.78);
+    background: linear-gradient(135deg, rgba(217, 163, 79, 0.22), rgba(111, 147, 166, 0.1));
+  }
+</style>
