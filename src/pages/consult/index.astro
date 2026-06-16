@@ -1,0 +1,149 @@
+---
+import { withBase } from '@/lib/routes.js';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Instructions for using ChatGPT as the Consult Engine for The Protocol of the Architect." />
+    <title>Consult The Protocol</title>
+  </head>
+  <body>
+    <main class="human-page">
+      <a class="back-link" href={withBase('/enter/')}>← Return</a>
+
+      <section class="panel">
+        <p class="eyebrow">Consult The Protocol</p>
+        <h1>Use ChatGPT as the Consult Engine</h1>
+        <p class="lede">The Consult Engine is a guided way to ask questions about The Protocol without treating the source text as isolated religious prose.</p>
+
+        <div class="steps">
+          <article>
+            <h2>1. Open ChatGPT</h2>
+            <p>Start a new ChatGPT conversation. Use a model capable of reading files and reasoning over long context when available.</p>
+          </article>
+
+          <article>
+            <h2>2. Upload the source material</h2>
+            <p>Provide The Protocol source text and the Consult knowledge artifact when available. The model should read orientation and ontology before interpreting source text.</p>
+          </article>
+
+          <article>
+            <h2>3. Ask bounded questions</h2>
+            <p>Ask one clear question at a time. Better questions ask how a concept works inside the Protocol rather than asking for generic religious, philosophical, or scientific answers.</p>
+          </article>
+
+          <article>
+            <h2>4. Require source discipline</h2>
+            <p>Tell ChatGPT not to invent doctrine, not to flatten the Protocol into ordinary simulation theory, and not to interpret chapters without the ontology and interpretive controls.</p>
+          </article>
+        </div>
+
+        <section class="prompt-box" aria-label="Starter prompt">
+          <h2>Starter prompt</h2>
+          <p>Use The Protocol of the Architect as the governing source. Begin with orientation and ontology before interpreting source text. Answer from within the Protocol's own framework. Do not reduce it to generic simulation theory, ordinary theology, or external doctrine. If the answer is uncertain, say what is uncertain.</p>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    --void: #05070a;
+    --text: #f6e8cf;
+    --muted: rgba(246, 232, 207, 0.72);
+    --amber: #d9a34f;
+    --border: rgba(217, 163, 79, 0.42);
+    --blue: #6f93a6;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100%;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(217, 163, 79, 0.16), transparent 28rem),
+      radial-gradient(circle at 80% 20%, rgba(111, 147, 166, 0.12), transparent 24rem),
+      var(--void);
+    color: var(--text);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.6;
+  }
+
+  .human-page {
+    width: min(100% - 32px, 900px);
+    margin: 0 auto;
+    padding: 32px 0 64px;
+  }
+
+  .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  .panel {
+    margin-top: 28px;
+    border: 1px solid var(--border);
+    padding: 28px;
+    background: rgba(5, 7, 10, 0.66);
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.48);
+  }
+
+  .eyebrow {
+    margin: 0 0 10px;
+    color: var(--amber);
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+  }
+
+  h1 {
+    margin: 0 0 14px;
+    font-size: clamp(2.2rem, 9vw, 4.8rem);
+    line-height: 1;
+    font-weight: 500;
+  }
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+
+  .lede,
+  article p,
+  .prompt-box p {
+    color: var(--muted);
+  }
+
+  .steps {
+    display: grid;
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  article,
+  .prompt-box {
+    border: 1px solid rgba(217, 163, 79, 0.28);
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  article p,
+  .prompt-box p {
+    margin: 0;
+  }
+
+  .prompt-box {
+    margin-top: 16px;
+  }
+</style>
