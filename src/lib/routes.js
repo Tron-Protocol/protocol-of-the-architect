@@ -4,6 +4,10 @@ export const ABSOLUTE_BASE_URL = `${SITE_URL}${BASE_PATH}`;
 
 export const routes = [
   '/',
+  '/slideshow/',
+  '/enter/',
+  '/podcasts/',
+  '/consult/',
   '/ai/',
   '/ai/orientation/',
   '/ai/sources/',
@@ -25,10 +29,14 @@ export const routes = [
 export function withBase(path = '/') {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   const base = import.meta.env?.BASE_URL || '/';
-  return `${base.replace(/\/$/, '')}${normalized}`.replace(/\/\//g, '/').replace(':/', '://');
+
+  return `${base.replace(/\/$/, '')}${normalized}`
+    .replace(/\/\//g, '/')
+    .replace(':/', '://');
 }
 
 export function absoluteUrl(path = '/') {
   const normalized = path.startsWith('/') ? path : `/${path}`;
+
   return `${ABSOLUTE_BASE_URL}${normalized === '/' ? '/' : normalized}`;
 }
