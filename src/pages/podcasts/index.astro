@@ -1,0 +1,143 @@
+---
+import { withBase } from '@/lib/routes.js';
+
+const episodes = [
+  {
+    title: 'The Protocol of the Architect Explains The Collective Soul',
+    description: 'An audio essay on human connection, collective memory, and the connected human whole.'
+  },
+  {
+    title: 'The Protocol of the Architect Explains Reality, Existence, and Experience',
+    description: 'An audio essay on mediated reality, experience, imagination, artificial reality, and purpose.'
+  },
+  {
+    title: 'The Protocol of the Architect Explains Purpose, Immanence, and the Divine Plan',
+    description: 'An audio essay on purpose, divine guidance, and humanity\\'s developmental task.'
+  },
+  {
+    title: 'The Protocol of the Architect Explains History, Memory, and Truth',
+    description: 'An audio essay on preservation, historical memory, truth, and revelation.'
+  }
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Podcast and audio essay page for The Protocol of the Architect." />
+    <title>Explore The Protocol</title>
+  </head>
+  <body>
+    <main class="human-page">
+      <a class="back-link" href={withBase('/enter/')}>← Return</a>
+
+      <section class="panel">
+        <p class="eyebrow">Explore The Protocol</p>
+        <h1>Podcast Essays</h1>
+        <p class="lede">This page is prepared for the human-facing audio essays. Add the audio files when you are ready to publish them.</p>
+
+        <div class="episode-grid">
+          {episodes.map((episode) => (
+            <article class="episode-card">
+              <h2>{episode.title}</h2>
+              <p>{episode.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    --void: #05070a;
+    --text: #f6e8cf;
+    --muted: rgba(246, 232, 207, 0.72);
+    --amber: #d9a34f;
+    --border: rgba(217, 163, 79, 0.42);
+    --blue: #6f93a6;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100%;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(217, 163, 79, 0.16), transparent 28rem),
+      radial-gradient(circle at 80% 20%, rgba(111, 147, 166, 0.12), transparent 24rem),
+      var(--void);
+    color: var(--text);
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+
+  .human-page {
+    width: min(100% - 32px, 900px);
+    margin: 0 auto;
+    padding: 32px 0 64px;
+  }
+
+  .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  .panel {
+    margin-top: 28px;
+    border: 1px solid var(--border);
+    padding: 28px;
+    background: rgba(5, 7, 10, 0.66);
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.48);
+  }
+
+  .eyebrow {
+    margin: 0 0 10px;
+    color: var(--amber);
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+  }
+
+  h1 {
+    margin: 0 0 14px;
+    font-size: clamp(2.4rem, 10vw, 5rem);
+    line-height: 1;
+    font-weight: 500;
+  }
+
+  .lede {
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  .episode-grid {
+    display: grid;
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  .episode-card {
+    border: 1px solid rgba(217, 163, 79, 0.28);
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+
+  .episode-card p {
+    margin: 0;
+    color: var(--muted);
+  }
+</style>
