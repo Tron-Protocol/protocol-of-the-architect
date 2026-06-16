@@ -10,6 +10,8 @@ const { title = 'The Protocol of the Architect', description = 'A public archive
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title}</title>
+
+    <slot name="head" />
   </head>
   <body>
     <div class="site-frame">
