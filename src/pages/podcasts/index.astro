@@ -1,22 +1,38 @@
 ---
 import { withBase } from '@/lib/routes.js';
 
+const releaseBase = 'https://github.com/Tron-Protocol/protocol-of-the-architect/releases/download/podcast-audio-v1';
+
 const episodes = [
   {
-    title: 'The Protocol of the Architect Explains The Collective Soul',
-    description: 'An audio essay on human connection, collective memory, and the connected human whole.'
+    number: '01',
+    title: 'The Protocol of the Architect Overview',
+    description: 'A broad introductory orientation to the Protocol, its purpose, and the worldview it presents.',
+    audioUrl: `${releaseBase}/protocol-overview.mp3`
   },
   {
-    title: 'The Protocol of the Architect Explains Reality, Existence, and Experience',
-    description: 'An audio essay on mediated reality, experience, imagination, artificial reality, and purpose.'
+    number: '02',
+    title: 'Reality, Existence, and Experience',
+    description: 'An audio essay on mediated reality, experience, imagination, artificial reality, civilization, and purpose.',
+    audioUrl: `${releaseBase}/reality-existence-experience.mp3`
   },
   {
-    title: 'The Protocol of the Architect Explains Purpose, Immanence, and the Divine Plan',
-    description: 'An audio essay on purpose, divine guidance, and the developmental task of humanity.'
+    number: '03',
+    title: 'The Collective Soul',
+    description: 'An audio essay on human connection, collective memory, responsibility, and the connected human whole.',
+    audioUrl: `${releaseBase}/collective-soul.mp3`
   },
   {
-    title: 'The Protocol of the Architect Explains History, Memory, and Truth',
-    description: 'An audio essay on preservation, historical memory, truth, and revelation.'
+    number: '04',
+    title: 'Purpose, Immanence, and the Divine Plan',
+    description: 'An audio essay on purpose, divine guidance, and the developmental task of humanity.',
+    audioUrl: `${releaseBase}/purpose-immanence-divine-plan.mp3`
+  },
+  {
+    number: '05',
+    title: 'History, Memory, and Truth',
+    description: 'An audio essay on preservation, historical memory, truth, revelation, and the problem of knowledge across time.',
+    audioUrl: `${releaseBase}/history-memory-truth.mp3`
   }
 ];
 ---
@@ -29,6 +45,7 @@ const episodes = [
     <meta name="description" content="Podcast and audio essay page for The Protocol of the Architect." />
     <title>Explore The Protocol</title>
   </head>
+
   <body>
     <main class="human-page">
       <a class="back-link" href={withBase('/enter/')}>← Return</a>
@@ -36,13 +53,28 @@ const episodes = [
       <section class="panel">
         <p class="eyebrow">Explore The Protocol</p>
         <h1>Podcast Essays</h1>
-        <p class="lede">This page is prepared for the human-facing audio essays. Add the audio files when you are ready to publish them.</p>
+        <p class="lede">
+          These audio essays provide a human-facing path into The Protocol of the Architect.
+          They are arranged as an ordered progression, beginning with orientation and moving into the deeper structures of experience, collective life, purpose, memory, and truth.
+        </p>
 
         <div class="episode-grid">
           {episodes.map((episode) => (
             <article class="episode-card">
-              <h2>{episode.title}</h2>
-              <p>{episode.description}</p>
+              <div class="episode-header">
+                <span class="episode-number">{episode.number}</span>
+                <div>
+                  <h2>{episode.title}</h2>
+                  <p>{episode.description}</p>
+                </div>
+              </div>
+
+              <audio controls preload="metadata">
+                <source src={episode.audioUrl} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+
+              <a class="download-link" href={episode.audioUrl}>Open audio file</a>
             </article>
           ))}
         </div>
@@ -57,6 +89,7 @@ const episodes = [
     --text: #f6e8cf;
     --muted: rgba(246, 232, 207, 0.72);
     --amber: #d9a34f;
+    --amber-soft: #f1c47a;
     --border: rgba(217, 163, 79, 0.42);
     --blue: #6f93a6;
   }
@@ -65,24 +98,30 @@ const episodes = [
     box-sizing: border-box;
   }
 
+  html,
+  body {
+    min-height: 100%;
+  }
+
   body {
     margin: 0;
-    min-height: 100%;
     background:
       radial-gradient(circle at 50% 0%, rgba(217, 163, 79, 0.16), transparent 28rem),
       radial-gradient(circle at 80% 20%, rgba(111, 147, 166, 0.12), transparent 24rem),
       var(--void);
     color: var(--text);
     font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.6;
   }
 
   .human-page {
-    width: min(100% - 32px, 900px);
+    width: min(100% - 32px, 920px);
     margin: 0 auto;
     padding: 32px 0 64px;
   }
 
-  .back-link {
+  .back-link,
+  .download-link {
     color: var(--muted);
     text-decoration: none;
     letter-spacing: 0.12em;
@@ -90,11 +129,18 @@ const episodes = [
     font-size: 0.75rem;
   }
 
+  .back-link:hover,
+  .download-link:hover {
+    color: var(--amber-soft);
+  }
+
   .panel {
     margin-top: 28px;
     border: 1px solid var(--border);
     padding: 28px;
-    background: rgba(5, 7, 10, 0.66);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(217, 163, 79, 0.08), transparent 22rem),
+      rgba(5, 7, 10, 0.72);
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.48);
   }
 
@@ -114,30 +160,82 @@ const episodes = [
   }
 
   .lede {
+    max-width: 68ch;
     color: var(--muted);
-    max-width: 62ch;
   }
 
   .episode-grid {
     display: grid;
-    gap: 14px;
-    margin-top: 28px;
+    gap: 18px;
+    margin-top: 32px;
   }
 
   .episode-card {
     border: 1px solid rgba(217, 163, 79, 0.28);
-    padding: 18px;
+    padding: 20px;
     background: rgba(255, 255, 255, 0.025);
+    box-shadow: inset 0 0 0 1px rgba(246, 232, 207, 0.03);
+  }
+
+  .episode-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .episode-number {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgba(217, 163, 79, 0.42);
+    border-radius: 50%;
+    color: var(--amber-soft);
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
   }
 
   h2 {
     margin: 0 0 8px;
-    font-size: 1.2rem;
-    line-height: 1.2;
+    font-size: clamp(1.24rem, 5vw, 2rem);
+    line-height: 1.12;
+    font-weight: 500;
   }
 
   .episode-card p {
     margin: 0;
     color: var(--muted);
+  }
+
+  audio {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+  }
+
+  .download-link {
+    display: inline-block;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 540px) {
+    .panel {
+      padding: 22px 18px;
+    }
+
+    .episode-card {
+      padding: 18px;
+    }
+
+    .episode-header {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .episode-number {
+      width: 40px;
+      height: 40px;
+    }
   }
 </style>
