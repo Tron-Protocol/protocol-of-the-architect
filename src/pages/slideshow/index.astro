@@ -8,9 +8,7 @@ const slides = Array.from({ length: 11 }, (_, index) => ({
 }));
 
 const enterUrl = withBase('/enter/');
-const homeUrl = withBase('/');
 ---
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -35,8 +33,6 @@ const homeUrl = withBase('/');
           <button id="prev-slide" type="button" class="control-button secondary" disabled>Back</button>
           <button id="next-slide" type="button" class="control-button primary">Next</button>
         </div>
-
-        <a class="desktop-return" href={homeUrl}>Desktop archive</a>
       </div>
     </main>
 
@@ -46,7 +42,6 @@ const homeUrl = withBase('/');
       const progressBar = document.getElementById('progress-bar');
       const prevButton = document.getElementById('prev-slide');
       const nextButton = document.getElementById('next-slide');
-
       let current = 0;
       let touchStartX = 0;
       let touchEndX = 0;
@@ -82,6 +77,7 @@ const homeUrl = withBase('/');
 
       function goPrev() {
         if (current === 0) return;
+
         current -= 1;
         renderSlide();
       }
@@ -94,18 +90,26 @@ const homeUrl = withBase('/');
         if (event.key === 'ArrowLeft') goPrev();
       });
 
-      activeSlide.addEventListener('touchstart', (event) => {
-        touchStartX = event.changedTouches[0].screenX;
-      }, { passive: true });
+      activeSlide.addEventListener(
+        'touchstart',
+        (event) => {
+          touchStartX = event.changedTouches[0].screenX;
+        },
+        { passive: true }
+      );
 
-      activeSlide.addEventListener('touchend', (event) => {
-        touchEndX = event.changedTouches[0].screenX;
-        const delta = touchEndX - touchStartX;
+      activeSlide.addEventListener(
+        'touchend',
+        (event) => {
+          touchEndX = event.changedTouches[0].screenX;
+          const delta = touchEndX - touchStartX;
 
-        if (Math.abs(delta) < 45) return;
-        if (delta < 0) goNext();
-        if (delta > 0) goPrev();
-      }, { passive: true });
+          if (Math.abs(delta) < 45) return;
+          if (delta < 0) goNext();
+          if (delta > 0) goPrev();
+        },
+        { passive: true }
+      );
 
       renderSlide();
     </script>
@@ -115,6 +119,7 @@ const homeUrl = withBase('/');
 <style>
   :root {
     --void: #05070a;
+    --ink: #101012;
     --text: #f6e8cf;
     --muted: rgba(246, 232, 207, 0.74);
     --amber: #d9a34f;
@@ -208,8 +213,7 @@ const homeUrl = withBase('/');
     margin-top: 12px;
   }
 
-  .control-button,
-  .desktop-return {
+  .control-button {
     appearance: none;
     border: 1px solid var(--border);
     border-radius: 999px;
@@ -220,7 +224,6 @@ const homeUrl = withBase('/');
     font-size: 0.92rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    text-decoration: none;
     text-align: center;
   }
 
@@ -230,15 +233,5 @@ const homeUrl = withBase('/');
 
   .control-button:disabled {
     opacity: 0.38;
-  }
-
-  .desktop-return {
-    display: block;
-    width: max-content;
-    margin: 10px auto 0;
-    padding: 4px 10px;
-    border: 0;
-    color: rgba(246, 232, 207, 0.52);
-    font-size: 0.68rem;
   }
 </style>
