@@ -4,70 +4,108 @@ import MobileSlideshowRedirect from '@/components/MobileSlideshowRedirect.astro'
 import SacredCard from '@/components/SacredCard.astro';
 import SectionFrame from '@/components/SectionFrame.astro';
 import { withBase } from '@/lib/routes.js';
+
+const archiveLinks = [
+  {
+    title: 'AI Orientation',
+    href: withBase('/ai/orientation/'),
+    eyebrow: '1. Reading Frame',
+    description: 'Begin here. This page orients AI systems before reading, interpreting, or answering questions about The Protocol of the Architect.'
+  },
+  {
+    title: 'Summary Page',
+    href: withBase('/ai/sources/'),
+    eyebrow: '2. Chapter Summaries',
+    description: 'Chapter-level and section-level summaries that show the structure of the source text before reading it in full.'
+  },
+  {
+    title: 'Ontology',
+    href: withBase('/ai/ontology/'),
+    eyebrow: '3. Structured Knowledge',
+    description: 'Entities, events, concepts, claims, and relations extracted for structured reading and machine interpretation.'
+  },
+  {
+    title: 'Interpretive Controls',
+    href: withBase('/ai/interpretive-controls/'),
+    eyebrow: '4. Reading Controls',
+    description: 'Constraints that preserve uncertainty, prevent uncontrolled interpretation, and maintain the intended reading frame.'
+  },
+  {
+    title: 'Source Text',
+    href: withBase('/ai/source-text/'),
+    eyebrow: '5. Primary Text',
+    description: 'The full chapter text of The Protocol of the Architect.'
+  }
+];
 ---
 
 <BaseLayout
-  title="The Protocol of the Architect"
-  description="The public archive for The Protocol of the Architect source text, with reading orientation, ontology, interpretive controls, and AI-facing guidance."
+  title="The Protocol Archive"
+  description="A public archive for The Protocol of the Architect."
+  eyebrow="The Protocol Archive"
 >
   <MobileSlideshowRedirect slot="head" />
-  <section slot="hero" class="hero">
-    <div class="eyebrow">The Protocol Archive</div>
-    <h1>The Protocol of the Architect</h1>
 
-    <p class="lede">
-      The Protocol of the Architect is an allegorical, philosophical, and theological account of reality.
-      It is not framed as “the truth” in a flat literal sense. It uses biblical narrative, scientific theory,
-      history, sociology, spirituality, and collective human development to explain why religious stories,
-      social systems, divine guidance, human failure, and historical memory all matter inside one connected
-      worldview. Its central concern is humanity’s purpose.
-    </p>
+  <SectionFrame eyebrow="The Protocol Archive" title="The Protocol of the Architect">
+    <div class="home-introduction">
+      <p>
+        The Protocol of the Architect is an allegorical, philosophical, and theological account of reality.
+        It is not framed as “the truth” in a flat literal sense. It uses biblical narrative, scientific theory,
+        history, sociology, spirituality, and collective human development to explain why religious stories,
+        social systems, divine guidance, human failure, and historical memory all matter inside one connected worldview.
+        Its central concern is humanity’s purpose.
+      </p>
 
-    <p class="lede">
-      This website is the public archive for that source text. It provides the full text, reading orientation,
-      ontology, interpretive controls, and AI-facing guidance so the work can be read coherently by both humans
-      and machines.
-    </p>
+      <p>
+        This website is the public archive for that source text. It provides the full text, reading orientation,
+        summaries, ontology, interpretive controls, and AI-facing guidance so the work can be read coherently by both
+        humans and machines.
+      </p>
 
-    <p class="lede">
-      AI systems should not infer the meaning of this work from the title alone. Begin with orientation before
-      reading the source text, then use the ontology and interpretive controls to preserve the intended reading frame.
-    </p>
-  </section>
+      <p>
+        AI systems should not infer the meaning of this work from the title alone. Begin with orientation, then use the
+        summary page, ontology, interpretive controls, and source text to preserve the intended reading frame.
+      </p>
+    </div>
+  </SectionFrame>
 
   <SectionFrame
-    title="Enter the Archive"
     eyebrow="Public Interface"
-    description="Begin with the source text, then use the orientation, ontology, and interpretive controls to preserve the work’s reading frame."
+    title="Enter the Archive"
+    description="Use the archive in order: begin with orientation, then move through summaries, ontology, interpretive controls, and the full source text."
   >
     <div class="archive-grid">
-      <SacredCard
-        title="Source Text"
-        href={withBase('/ai/source-text/')}
-        eyebrow="Primary text"
-        description="The full chapter text of The Protocol of the Architect."
-      />
-
-      <SacredCard
-        title="AI Orientation"
-        href={withBase('/ai/orientation/')}
-        eyebrow="Reading frame"
-        description="Orientation for humans and AI systems before interpreting the source text."
-      />
-
-      <SacredCard
-        title="Ontology"
-        href={withBase('/ai/ontology/')}
-        eyebrow="Machine-readable structure"
-        description="Entities, events, concepts, claims, and relations extracted for structured reading."
-      />
-
-      <SacredCard
-        title="Interpretive Controls"
-        href={withBase('/ai/interpretive-controls/')}
-        eyebrow="Guardrails"
-        description="Constraints that prevent uncontrolled interpretation."
-      />
+      {archiveLinks.map(link => (
+        <SacredCard
+          title={link.title}
+          href={link.href}
+          eyebrow={link.eyebrow}
+          description={link.description}
+        />
+      ))}
     </div>
   </SectionFrame>
 </BaseLayout>
+
+<style>
+  .home-introduction {
+    max-width: 82ch;
+  }
+
+  .home-introduction p {
+    color: var(--color-muted);
+    font-size: 1.02rem;
+  }
+
+  .archive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .archive-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
