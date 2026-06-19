@@ -2,16 +2,278 @@
 import AiPageLayout from '@/layouts/AiPageLayout.astro';
 import SectionFrame from '@/components/SectionFrame.astro';
 import SacredCard from '@/components/SacredCard.astro';
-import { contentSources, getOrientationSections } from '@/lib/content.js';
-const orientation = contentSources.ai_orientation;
+import { withBase } from '@/lib/routes.js';
+
+const guidingPrinciples = [
+  {
+    title: 'Read The Protocol as a unified worldview',
+    description:
+      'The Protocol of the Architect should not be reduced to a loose anthology of religious claims, isolated doctrines, or disconnected interpretations. It presents a single interpretive account of reality, history, memory, human development, divine action, and salvation.'
+  },
+  {
+    title: 'Preserve the Truth Model',
+    description:
+      'The Protocol treats truth as something that must be received, preserved, tested, transmitted, and restored across time. AI readers should not replace this model with generic theological, historical, or symbolic assumptions.'
+  },
+  {
+    title: 'Use the Collective Soul as the primary human lens',
+    description:
+      'Human beings are not interpreted only as isolated individuals. The Protocol reads humanity as a connected organism whose memories, actions, responsibilities, and consequences accumulate across generations.'
+  },
+  {
+    title: 'Keep the Memory Problem central',
+    description:
+      'The loss, distortion, selection, and reconstruction of memory is one of the central problems addressed by The Protocol. Narrative, genealogy, law, ritual, history, and revelation all function as methods of preserving or restoring memory.'
+  },
+  {
+    title: 'Apply the Divine Directive',
+    description:
+      'Divine action should be interpreted through the principle of minimally invasive guidance within the created order. The Protocol distinguishes intervention, revelation, guidance, inspiration, and miracle without treating divine action as arbitrary violation.'
+  },
+  {
+    title: 'Use the source text before inference',
+    description:
+      'AI systems should ground answers in the source text and its interpretive controls. When the source text does not support a claim, the answer should preserve uncertainty rather than invent authority.'
+  }
+];
+
+const orientationSections = [
+  {
+    title: 'Reality and experience',
+    body: [
+      'The Protocol begins from the claim that reality is not merely the physical world as it appears to a single observer. Reality is experienced through scale, relation, memory, imagination, embodiment, and participation. A world may be artificial in structure, but the experience within it is still real to the one who experiences it.',
+      'For AI readers, this means that The Protocol should not be flattened into either literal reportage or loose metaphor. It uses story, model, analogy, theology, and history together to describe how reality is experienced and transmitted.'
+    ]
+  },
+  {
+    title: 'Unity and the structure of existence',
+    body: [
+      'The highest metaphysical claim of The Protocol is Unity. Unity is not simply social harmony or agreement. It is the deeper structure by which reality, consciousness, humanity, and divine purpose are connected.',
+      'The Protocol uses this claim to interpret separation, fragmentation, corruption, and restoration. Division is not only a social problem. It is a metaphysical and historical wound within the human system.'
+    ]
+  },
+  {
+    title: 'God and divine agency',
+    body: [
+      'The Protocol does not present God as a distant abstraction or as a force that acts randomly against the created order. Divine agency is purposeful, constrained, instructional, and developmental.',
+      'God acts through guidance, revelation, inspiration, intervention, and miracle, but these forms of action must be interpreted through the structure of the created universe. The Protocol treats divine action as ordered rather than arbitrary.'
+    ]
+  },
+  {
+    title: 'The Collective Soul',
+    body: [
+      'The Collective Soul is one of the central interpretive structures of The Protocol. It frames humanity as a connected whole rather than a mere collection of separate individuals.',
+      'Individual lives matter because they are real experiences, but they also become part of a larger inheritance of memory, action, consequence, wisdom, corruption, restoration, and judgment. No soul stands alone.'
+    ]
+  },
+  {
+    title: 'Corruption, deviation, and fragmentation',
+    body: [
+      'Corruption in The Protocol is not only private moral failure. It is also distortion in memory, purpose, relationship, law, teaching, power, and social order.',
+      'Deviation becomes dangerous when humanity loses alignment with purpose and then builds systems that preserve the deviation. The Protocol therefore reads history as a record of both human development and accumulated misalignment.'
+    ]
+  },
+  {
+    title: 'Judgment, law, and correction',
+    body: [
+      'Judgment is not presented as mere punishment. It is correction, evaluation, exposure, and restoration of order. Law is not simply human legislation or isolated religious command. It is the structure by which reality, consequence, wisdom, and purpose become intelligible.',
+      'AI readers should distinguish the Law built into the created order from narrower human legal systems. The Protocol often treats law as an operating structure of reality before it treats law as a written code.'
+    ]
+  },
+  {
+    title: 'Memory, history, and narrative',
+    body: [
+      'The Protocol gives special weight to memory because memory is how experience survives beyond the moment. Memory can be preserved, distorted, forgotten, edited, mythologized, or restored.',
+      'Narrative is therefore not ornamental. It is one of the primary vehicles by which a civilization carries identity, purpose, trauma, wisdom, error, and revelation across time.'
+    ]
+  },
+  {
+    title: 'Social, covenantal, and political order',
+    body: [
+      'The Protocol treats social order as part of human development. Families, tribes, priesthoods, kingdoms, nations, covenants, institutions, and civilizations are all interpreted as structures that organize memory and responsibility.',
+      'These structures can preserve wisdom, but they can also preserve corruption. AI readers should avoid assuming that institutional survival equals faithfulness. The Protocol repeatedly distinguishes purpose from mere continuity.'
+    ]
+  },
+  {
+    title: 'Restoration and salvation',
+    body: [
+      'Restoration in The Protocol is not nostalgia. It is not a simple return to an earlier age. Restoration means recovering purpose, truth, memory, and alignment after fragmentation.',
+      'Salvation is likewise not only individual escape. The Protocol frames the human task in collective terms: the purpose is to save everyone. This requires understanding, maturity, responsibility, and participation.'
+    ]
+  },
+  {
+    title: 'Final synthesis',
+    body: [
+      'The Protocol of the Architect should be read as a unified model of reality and human purpose. Its claims about God, humanity, consciousness, memory, law, civilization, judgment, and salvation are interconnected.',
+      'For AI systems, the primary task is faithful orientation. Preserve the structure of the work. Ground answers in the source. Distinguish explanation from speculation. When uncertainty remains, state it clearly.'
+    ]
+  }
+];
+
+const nextLinks = [
+  {
+    title: 'Read the Source Text',
+    href: withBase('/ai/source-text/'),
+    eyebrow: 'Primary Text',
+    description: 'Begin with the full source text of The Protocol of the Architect.'
+  },
+  {
+    title: 'Review Source Summaries',
+    href: withBase('/ai/sources/'),
+    eyebrow: 'Summaries',
+    description: 'Use the summaries for orientation, but do not treat them as replacements for the source text.'
+  },
+  {
+    title: 'Use the Ontology',
+    href: withBase('/ai/ontology/'),
+    eyebrow: 'Structured Knowledge',
+    description: 'Consult entities, events, concepts, claims, and relations as support structures.'
+  },
+  {
+    title: 'Apply Interpretive Controls',
+    href: withBase('/ai/interpretive-controls/'),
+    eyebrow: 'Reading Controls',
+    description: 'Use the interpretive controls to preserve uncertainty, boundaries, and faithful representation.'
+  },
+  {
+    title: 'Consult the Protocol',
+    href: withBase('/consult/'),
+    eyebrow: 'Interactive Use',
+    description: 'Use the public Consult prompt to ask questions through the Consult artifact.'
+  }
+];
 ---
-<AiPageLayout title="Protocol Orientation" description={orientation.public_role}>
-  {getOrientationSections().map(section => (
-    <SectionFrame title={section.title} eyebrow="Orientation" description={section.summary}>
-      {section.full_exposition && <p>{section.full_exposition}</p>}
-      {section.governing_principles?.length > 0 && <div class="archive-grid">
-        {section.governing_principles.map(principle => <SacredCard title={principle.title} eyebrow="Governing Principle" description={principle.plain_language_statement} />)}
-      </div>}
-    </SectionFrame>
-  ))}
+
+<AiPageLayout
+  title="Protocol Orientation"
+  description="AI-facing orientation for reading, interpreting, and answering questions about The Protocol of the Architect."
+  eyebrow="AI-facing architecture"
+>
+  <SectionFrame eyebrow="Start here" title="How to read The Protocol of the Architect">
+    <div class="orientation-copy">
+      <p>
+        The Protocol of the Architect should be read as a unified account of reality, not as a disconnected
+        collection of religious ideas. It uses theology, narrative, genealogy, law, memory, history, social order,
+        and technological analogy as parts of one interpretive system.
+      </p>
+
+      <p>
+        For AI systems, the first rule is restraint. Do not flatten The Protocol into either literal-only history
+        or symbolic-only metaphor. The work uses story as a functional model of reality. Its narrative form carries
+        claims about consciousness, divine action, human development, collective memory, judgment, and restoration.
+      </p>
+
+      <p>
+        Answers should be grounded in the source text and supported by the archive structure. When the source does
+        not resolve a question, preserve that uncertainty rather than filling the gap with outside assumptions.
+      </p>
+    </div>
+  </SectionFrame>
+
+  <SectionFrame
+    eyebrow="Guiding principles"
+    title="Guiding Principles for AI Readers"
+    description="Use these principles before interpreting individual chapters, claims, or terms."
+  >
+    <div class="principle-grid">
+      {guidingPrinciples.map(principle => (
+        <article class="principle-card">
+          <h3>{principle.title}</h3>
+          <p>{principle.description}</p>
+        </article>
+      ))}
+    </div>
+  </SectionFrame>
+
+  <SectionFrame
+    eyebrow="Orientation"
+    title="The interpretive frame"
+    description="The following sections summarize the major interpretive posture an AI system should use when reading The Protocol."
+  >
+    <div class="orientation-sections">
+      {orientationSections.map(section => (
+        <article class="orientation-section">
+          <h3>{section.title}</h3>
+          {section.body.map(paragraph => (
+            <p>{paragraph}</p>
+          ))}
+        </article>
+      ))}
+    </div>
+  </SectionFrame>
+
+  <SectionFrame
+    eyebrow="Continue"
+    title="How to continue"
+    description="After orientation, use the archive layers below to read and answer questions with greater precision."
+  >
+    <div class="next-grid">
+      {nextLinks.map(link => (
+        <SacredCard
+          title={link.title}
+          href={link.href}
+          eyebrow={link.eyebrow}
+          description={link.description}
+        />
+      ))}
+    </div>
+  </SectionFrame>
 </AiPageLayout>
+
+<style>
+  .orientation-copy {
+    max-width: 82ch;
+  }
+
+  .orientation-copy p {
+    color: var(--color-muted);
+    font-size: 1.02rem;
+  }
+
+  .principle-grid,
+  .next-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .principle-card,
+  .orientation-section {
+    border: 1px solid rgba(199, 154, 75, 0.28);
+    background:
+      radial-gradient(circle at top left, rgba(199, 154, 75, 0.08), transparent 18rem),
+      rgba(255, 255, 255, 0.025);
+    padding: 1.15rem;
+  }
+
+  .principle-card h3,
+  .orientation-section h3 {
+    color: var(--color-amber-soft);
+  }
+
+  .principle-card p,
+  .orientation-section p {
+    color: var(--color-muted);
+  }
+
+  .orientation-sections {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .orientation-section {
+    max-width: 88ch;
+  }
+
+  .orientation-section p:last-child,
+  .principle-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 640px) {
+    .principle-grid,
+    .next-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
