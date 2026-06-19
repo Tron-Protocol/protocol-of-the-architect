@@ -1,19 +1,347 @@
 ---
 import AiPageLayout from '@/layouts/AiPageLayout.astro';
-import SacredCard from '@/components/SacredCard.astro';
 import SectionFrame from '@/components/SectionFrame.astro';
-import { getSourceSummaries } from '@/lib/content.js';
+import { getSourceSummaries, publicChapterTitle } from '@/lib/content.js';
 import { withBase } from '@/lib/routes.js';
+
+const chapters = getSourceSummaries();
+
+const markerLabelChapters = new Set(['CH01', 'CH02', 'CH03', 'CH04', 'CH06', 'CH07']);
+const namedLabelChapters = new Set(['CH00', 'CH05', 'CH08', 'CH09']);
+
+function chapterSummary(chapter) {
+  return (
+    chapter.chapter_summary ||
+    chapter.chapter_explanation ||
+    'No chapter summary is currently available for this chapter.'
+  );
+}
+
+function chapterTitle(chapter) {
+  return publicChapterTitle(chapter);
+}
+
+function chapterSlug(chapter) {
+  return String(chapter.chapter_id).toLowerCase();
+}
+
+function sectionLabel(chapter, section, index) {
+  if (markerLabelChapters.has(chapter.chapter_id)) {
+    return section.source_marker || `Section ${index + 1}`;
+  }
+
+  if (namedLabelChapters.has(chapter.chapter_id)) {
+    return section.section_title || section.source_marker || `Section ${index + 1}`;
+  }
+
+  return section.section_title || section.source_marker || section.section_id || `Section ${index + 1}`;
+}
+
+function sectionCount(chapter) {
+  if (chapter.chapter_id === 'CH10') {
+    return chapter.books?.reduce((count, book) => count + (book.sections?.length || 0), 0) || 0;
+  }
+
+  return chapter.sections?.length || 0;
+}
+
+function localClaims(section) {
+  const claims = section.local_claims || [];
+
+  if (!Array.isArray(claims)) {
+    return [];
+  }
+
+  return claims
+    .map(claim => claim.local_claim || claim.claim_text || claim.summary || '')
+    .filter(Boolean);
+}
+
+function bookSectionLabel(book, index) {
+  return `${book.book_title}:${index + 1}`;
+}
 ---
-<AiPageLayout title="Source Text Summaries" description="Chapter and section summaries that orient readers before the full source text.">
-  <div class="archive-grid">
-    {getSourceSummaries().map(chapter => <SacredCard title={`${chapter.chapter_id}: ${chapter.chapter_title}`} href={withBase(`/ai/source-text/${chapter.chapter_id.toLowerCase()}/`)} eyebrow="Source" description={chapter.chapter_summary} />)}
-  </div>
-  {getSourceSummaries().map(chapter => (
-    <SectionFrame title={`${chapter.chapter_id}: ${chapter.chapter_title}`} eyebrow="Chapter Sections" description={chapter.chapter_summary}>
-      <div class="record-list">
-        {chapter.sections?.map(section => <details class="record"><summary>{section.section_title}</summary><p>{section.section_summary}</p></details>)}
-      </div>
-    </SectionFrame>
-  ))}
+
+<AiPageLayout
+  title="Source Text Summaries"
+  description="Chapter-level and section-level summaries for The Protocol of the Architect. Use this page to understand the structure of each chapter before reading the full source text."
+  eyebrow="AI-facing architecture"
+>
+  <SectionFrame
+    eyebrow="Summary layer"
+    title="Chapter summaries"
+    description="Each chapter includes an overall summary. Open a chapter to view the section summaries preserved for that chapter."
+  >
+    <div class="chapter-stack">
+      {chapters.map(chapter => (
+        <article class="chapter-card" id={chapter.chapter_id.toLowerCase()}>
+          <div class="chapter-heading">
+            <p class="chapter-id">{chapter.chapter_id}</p>
+            <h2>{chapterTitle(chapter)}</h2>
+          </div>
+
+          <p class="chapter-summary">{chapterSummary(chapter)}</p>
+
+          <div class="chapter-actions">
+            <a href={withBase(`/ai/source-text/${chapterSlug(chapter)}/`)}>Read full chapter</a>
+          </div>
+
+          <details class="chapter-details">
+            <summary>
+              <span>Section summaries</span>
+              <span class="summary-count">{sectionCount(chapter)} sections</span>
+            </summary>
+
+            {chapter.chapter_id === 'CH10' ? (
+              <div class="book-stack">
+                {chapter.books?.map(book => (
+                  <section class="book-group">
+                    <div class="book-heading">
+                      <h3>{book.book_title}</h3>
+                      <span>{book.sections?.length || 0} sections</span>
+                    </div>
+
+                    <div class="section-stack">
+                      {book.sections?.map((section, index) => (
+                        <article class="section-card">
+                          <h4>{bookSectionLabel(book, index)}</h4>
+
+                          {section.section_summary && <p>{section.section_summary}</p>}
+
+                          {localClaims(section).length > 0 && (
+                            <div class="local-claims">
+                              <p class="local-claim-label">Local claim</p>
+                              {localClaims(section).map(claim => (
+                                <p>{claim}</p>
+                              ))}
+                            </div>
+                          )}
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            ) : (
+              <div class="section-stack">
+                {chapter.sections?.map((section, index) => (
+                  <article class="section-card">
+                    <h3>{sectionLabel(chapter, section, index)}</h3>
+
+                    {section.section_summary ? (
+                      <p>{section.section_summary}</p>
+                    ) : (
+                      <p>No section summary is currently available.</p>
+                    )}
+
+                    {localClaims(section).length > 0 && (
+                      <div class="local-claims">
+                        <p class="local-claim-label">Local claim</p>
+                        {localClaims(section).map(claim => (
+                          <p>{claim}</p>
+                        ))}
+                      </div>
+                    )}
+                  </article>
+                ))}
+              </div>
+            )}
+          </details>
+        </article>
+      ))}
+    </div>
+  </SectionFrame>
 </AiPageLayout>
+
+<style>
+  .chapter-stack {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .chapter-card {
+    border: 1px solid rgba(199, 154, 75, 0.32);
+    background:
+      radial-gradient(circle at top left, rgba(199, 154, 75, 0.08), transparent 20rem),
+      rgba(255, 255, 255, 0.025);
+    padding: 1.25rem;
+  }
+
+  .chapter-heading {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .chapter-id {
+    margin: 0;
+    color: var(--color-amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+  }
+
+  .chapter-heading h2 {
+    margin: 0;
+    color: var(--color-amber-soft);
+    font-size: clamp(1.35rem, 3vw, 2rem);
+    line-height: 1.15;
+  }
+
+  .chapter-summary {
+    max-width: 90ch;
+    color: var(--color-muted);
+    font-size: 1.02rem;
+  }
+
+  .chapter-actions {
+    margin: 1rem 0;
+  }
+
+  .chapter-actions a {
+    color: var(--color-amber-soft);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+  }
+
+  .chapter-actions a:hover {
+    color: var(--color-text);
+  }
+
+  .chapter-details {
+    margin-top: 1rem;
+    border-top: 1px solid rgba(199, 154, 75, 0.24);
+    padding-top: 1rem;
+  }
+
+  .chapter-details summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+    color: var(--color-text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.86rem;
+  }
+
+  .chapter-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .chapter-details summary::before {
+    content: '+';
+    display: inline-grid;
+    place-items: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    margin-right: 0.65rem;
+    border: 1px solid rgba(199, 154, 75, 0.42);
+    color: var(--color-amber-soft);
+  }
+
+  .chapter-details[open] summary::before {
+    content: '–';
+  }
+
+  .chapter-details summary span:first-child {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .summary-count {
+    color: var(--color-muted);
+    font-size: 0.75rem;
+  }
+
+  .section-stack,
+  .book-stack {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  .book-group {
+    border: 1px solid rgba(199, 154, 75, 0.22);
+    background: rgba(0, 0, 0, 0.16);
+    padding: 1rem;
+  }
+
+  .book-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    border-bottom: 1px solid rgba(199, 154, 75, 0.18);
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .book-heading h3 {
+    margin: 0;
+    color: var(--color-amber-soft);
+    font-size: 1.18rem;
+  }
+
+  .book-heading span {
+    color: var(--color-muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .section-card {
+    border: 1px solid rgba(199, 154, 75, 0.18);
+    background: rgba(255, 255, 255, 0.018);
+    padding: 1rem;
+  }
+
+  .section-card h3,
+  .section-card h4 {
+    margin: 0 0 0.55rem;
+    color: var(--color-amber-soft);
+    font-size: 1.05rem;
+    line-height: 1.25;
+  }
+
+  .section-card p {
+    color: var(--color-muted);
+  }
+
+  .section-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  .local-claims {
+    margin-top: 0.8rem;
+    border-left: 1px solid rgba(111, 147, 166, 0.5);
+    padding-left: 0.85rem;
+  }
+
+  .local-claim-label {
+    margin: 0 0 0.35rem;
+    color: var(--color-amber);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+  }
+
+  @media (max-width: 640px) {
+    .chapter-card {
+      padding: 1rem;
+    }
+
+    .chapter-details summary,
+    .book-heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .summary-count {
+      margin-left: 2rem;
+    }
+  }
+</style>
